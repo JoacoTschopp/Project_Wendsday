@@ -3,8 +3,10 @@ import os
 import datetime
 import logging
 
-from src.loader import cargar_datos
+from src.loader import cargar_datos, convertir_clase_ternaria_a_target
 from src.features import feature_engineering_lag
+
+from src.conf import *
 
 ## config basico logging
 os.makedirs("logs", exist_ok=True)
@@ -22,24 +24,50 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+### Manejo de Configuración en YAML ###
+logger.info("Configuración cargada desde YAML")
+logger.info(f"STUDY_NAME: {STUDY_NAME}")
+logger.info(f"DATA_PATH: {DATA_PATH}")
+logger.info(f"SEMILLA: {SEMILLA}")
+logger.info(f"MES_TRAIN: {MES_TRAIN}")
+logger.info(f"MES_VALIDACION: {MES_VALIDACION}")
+logger.info(f"MES_TEST: {MES_TEST}")
+logger.info(f"GANANCIA_ACIERTO: {GANANCIA_ACIERTO}")
+logger.info(f"COSTO_ESTIMULO: {COSTO_ESTIMULO}")
+
+
 ## Funcion principal
 def main():
     logger.info("Inicio de ejecucion.")
 
     #00 Cargar datos
     os.makedirs("data", exist_ok=True)
-    path = "data/competencia_01.csv"
-    df = cargar_datos(path)       
+    df = cargar_datos(DATA_PATH)       
 
     #01 Feature Engineering
-    atributos = ["ctrx_quarter"]
+    atributos = ["mcuentas_saldo", "mtarjeta_visa_consumo", "cproductos"]
     cant_lag = 2
-    df = feature_engineering_lag(df, columnas=atributos, cant_lag=cant_lag)
+    df_fe = feature_engineering_lag(df, atributos, cant_lag)
+    logger.info(f"Feature Engineering completado: {df_fe.shape}")
+
+    #02 Convertir clase_ternaria a target binario
+    df_fe = convertir_clase_ternaria_a_target(df_fe)
     
-    #02 Guardar datos
-    path = "data/competencia_01_lag.csv"
-    df.to_csv(path, index=False)
+    #03 Ejecutar optimizacion de hiperparametros
+    study = optimizar(df_fe, n_trail=100)
+    
+    #04 Análisis adicional
+    logger.info("=== ANÁLISIS DE RESULTADOS ===")
+    trials_df = study.trials_dataframe()
+    if len(trials_df) > 0:
+        top_5 = trials_df.nlargest(5, 'value')
+        logger.info("Top 5 mejores trials:")
+        for idx, trial in top_5.iterrows():
+            logger.info(f"  Trial {trial['number']}: {trial['value']:,.0f}")
   
+    logger.info("=== OPTIMIZACIÓN COMPLETADA ===")
+    
+
     logger.info(f">>> Ejecución finalizada. Revisar logs para mas detalles.{monbre_log}")
 
 if __name__ == "__main__":
