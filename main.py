@@ -12,7 +12,7 @@ from src.conf import *
 os.makedirs("logs", exist_ok=True)
 
 fecha = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-monbre_log = f"log_{fecha}.log"
+monbre_log = f"log_{STUDY_NAME}_{fecha}.log"
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(name)s %(lineno)d - %(message)s',
