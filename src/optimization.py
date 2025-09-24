@@ -6,7 +6,7 @@ import logging
 import json
 import os
 from datetime import datetime
-from .config import *
+from .conf import *
 from .gain_function import calcular_ganancia, ganancia_lgb_binary
 
 logger = logging.getLogger(__name__)
@@ -35,18 +35,61 @@ def objetivo_ganancia(trial, df) -> float:
         'metric': 'None',  # Usamos nuestra métrica personalizada
 
 	#completar a gusto!!!!!!!
-
-        'random_state': SEMILLA,  # Desde configuración YAML
+        'num_leaves': trial.suggest_int('num_leaves', PARAMETROS_LGB['num_leaves'][0], PARAMETROS_LGB['num_leaves'][1]),
+        'learning_rate': trial.suggest_float('learning_rate', PARAMETROS_LGB['learning_rate'][0], PARAMETROS_LGB['learning_rate'][1], log=True),
+        'feature_fraction': trial.suggest_float('feature_fraction', PARAMETROS_LGB['feature_fraction'][0], PARAMETROS_LGB['feature_fraction'][1]),
+        'bagging_fraction': trial.suggest_float('bagging_fraction', PARAMETROS_LGB['bagging_fraction'][0], PARAMETROS_LGB['bagging_fraction'][1]),
+        'min_child_samples': trial.suggest_int('min_child_samples', PARAMETROS_LGB['min_child_samples'][0], PARAMETROS_LGB['min_child_samples'][1]),
+        'max_depth': trial.suggest_int('max_depth', PARAMETROS_LGB['max_depth'][0], PARAMETROS_LGB['max_depth'][1]),
+        'reg_alpha': trial.suggest_float('reg_alpha', PARAMETROS_LGB['reg_alpha'][0], PARAMETROS_LGB['reg_alpha'][1]),
+        'reg_lambda': trial.suggest_float('reg_lambda', PARAMETROS_LGB['reg_lambda'][0], PARAMETROS_LGB['reg_lambda'][1]),
+        'min_gain_to_split': 0.0,  # Permitir splits con ganancia mínima
+        'verbose': -1,  # Reducir verbosidad
+        'verbosity': -1,  # Silenciar mensajes adicionales
+        'silent': True,  # Modo silencioso
+        'bin': 31,
+        'random_state': SEMILLA[0],  # Desde configuración YAML
     }
   
-    # Completar!!!!!!
-
+    # Preparar datos usando configuración YAML
+    # MES_TRAIN ahora puede ser una lista o un solo valor
+    if isinstance(MES_TRAIN, list):
+        df_train = df[df['foto_mes'].isin(MES_TRAIN)]
+    else:
+        df_train = df[df['foto_mes'] == MES_TRAIN]
+    
+    df_val = df[df['foto_mes'] == MES_VALIDACION]
+    
+    # Usar target (clase_ternaria ya convertida a binaria)
+    y_train = df_train['clase_ternaria'].values
+    y_val = df_val['clase_ternaria'].values
+    
+    # Features: usar todas las columnas excepto target
+    X_train = df_train.drop(columns=['clase_ternaria'])
+    X_val = df_val.drop(columns=['clase_ternaria'])
+    
+    # Entrenar modelo con función de ganancia personalizada
+    train_data = lgb.Dataset(X_train, label=y_train)
+    val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
+    
+    model = lgb.train(
+        params,
+        train_data,
+        valid_sets=[val_data],
+        feval=ganancia_lgb_binary,  # Función de ganancia personalizada
+        callbacks=[lgb.early_stopping(50), lgb.log_evaluation(0)]
+    )
+    
+    # Predecir y calcular ganancia
+    y_pred_proba = model.predict(X_val)
+    y_pred_binary = (y_pred_proba > 0.025).astype(int)  # Usar mismo umbral que en ganancia_lgb_binary
+    
     ganancia_total = calcular_ganancia(y_val, y_pred_binary)
 
     # Guardar cada iteración en JSON
     guardar_iteracion(trial, ganancia_total)
   
-    logger.debug(f"Trial {trial.number}: Ganancia = {ganancia_total:,.0f}")
+    logger.info(f"Trial {trial.number}: Ganancia = {ganancia_total:,.0f}")
   
     return ganancia_total
 
@@ -103,11 +146,11 @@ def guardar_iteracion(trial, ganancia, archivo_base=None):
     logger.info(f"Ganancia: {ganancia:,.0f}" + "---" + "Parámetros: {params}")
 
 
-def optimizar(df: pd.DataFrame, n_trail: int, study_name: str = None) -> optuna.Study:
+def optimizar(df: pd.DataFrame, n_trial: int, study_name: str = None) -> optuna.Study:
     """
     Args:
         df: DataFrame con datos
-        n_trials: Número de trials a ejecutar
+        n_trial: Número de trials a ejecutar
         study_name: Nombre del estudio (si es None, usa el de config.yaml)
     
     Description:
@@ -124,10 +167,20 @@ def optimizar(df: pd.DataFrame, n_trail: int, study_name: str = None) -> optuna.
 
     study_name = STUDY_NAME
 
-    logger.info(f"Iniciando optimización con {n_trials} trials")
+    logger.info(f"Iniciando optimización con {n_trial} trials")
     logger.info(f"Configuración: TRAIN={MES_TRAIN}, VALID={MES_VALIDACION}, SEMILLA={SEMILLA}")
   
-    # Completar!!!!!!!!
+        # Crear estudio de Optuna
+    study = optuna.create_study(
+        direction='maximize',  # Maximizar ganancia
+        study_name=study_name
+    )
+    
+    # Función objetivo parcial con datos
+    objective_with_data = lambda trial: objetivo_ganancia(trial, df)
+    
+    # Ejecutar optimización
+    study.optimize(objective_with_data, n_trials=n_trial, show_progress_bar=True)
   
     # Resultados
     logger.info(f"Mejor ganancia: {study.best_value:,.0f}")

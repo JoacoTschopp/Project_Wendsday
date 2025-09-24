@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from .config import GANANCIA_ACIERTO, COSTO_ESTIMULO
+from .conf import GANANCIA_ACIERTO, COSTO_ESTIMULO
 import logging
 
 logger = logging.getLogger(__name__)
@@ -28,8 +28,8 @@ def calcular_ganancia(y_true, y_pred):
     # Verdaderos negativos y falsos negativos: ganancia = 0
   
     ganancia_total = np.sum(
-        (y_true == 1) & (y_pred == 1) * GANANCIA_ACIERTO +  # TP
-        (y_true == 0) & (y_pred == 1) * (-COSTO_ESTIMULO)   # FP
+        ((y_true == 1) & (y_pred == 1)) * GANANCIA_ACIERTO +  # TP
+        ((y_true == 0) & (y_pred == 1)) * (-COSTO_ESTIMULO)   # FP
     )
   
     logger.debug(f"Ganancia calculada: {ganancia_total:,.0f} "

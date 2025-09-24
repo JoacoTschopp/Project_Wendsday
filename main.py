@@ -5,6 +5,7 @@ import logging
 
 from src.loader import cargar_datos, convertir_clase_ternaria_a_target
 from src.features import feature_engineering_lag
+from src.optimization import optimizar
 
 from src.conf import *
 
@@ -14,7 +15,7 @@ os.makedirs("logs", exist_ok=True)
 fecha = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 monbre_log = f"log_{STUDY_NAME}_{fecha}.log"
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(name)s %(lineno)d - %(message)s',
     handlers=[
         logging.FileHandler(f"logs/{monbre_log}", mode="w", encoding="utf-8"),
@@ -23,17 +24,6 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-
-### Manejo de Configuración en YAML ###
-logger.info("Configuración cargada desde YAML")
-logger.info(f"STUDY_NAME: {STUDY_NAME}")
-logger.info(f"DATA_PATH: {DATA_PATH}")
-logger.info(f"SEMILLA: {SEMILLA}")
-logger.info(f"MES_TRAIN: {MES_TRAIN}")
-logger.info(f"MES_VALIDACION: {MES_VALIDACION}")
-logger.info(f"MES_TEST: {MES_TEST}")
-logger.info(f"GANANCIA_ACIERTO: {GANANCIA_ACIERTO}")
-logger.info(f"COSTO_ESTIMULO: {COSTO_ESTIMULO}")
 
 
 ## Funcion principal
@@ -54,7 +44,7 @@ def main():
     df_fe = convertir_clase_ternaria_a_target(df_fe)
     
     #03 Ejecutar optimizacion de hiperparametros
-    study = optimizar(df_fe, n_trail=100)
+    study = optimizar(df_fe, n_trial=25)
     
     #04 Análisis adicional
     logger.info("=== ANÁLISIS DE RESULTADOS ===")

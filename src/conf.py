@@ -11,6 +11,7 @@ try:
     with open(PATH_CONFIG, "r") as f:
         _cfgGeneral = yaml.safe_load(f)
         _cfg = _cfgGeneral["competencia01"]
+        PARAMETROS_LGB = _cfgGeneral["parametros_lgb"]
 
         STUDY_NAME = _cfgGeneral.get("STUDY_NAME", "Wendsday")
         DATA_PATH = _cfg.get("DATA_PATH", "../data/competencia.csv")
@@ -20,6 +21,8 @@ try:
         MES_TEST = _cfg.get("MES_TEST", "202104")
         GANANCIA_ACIERTO = _cfg.get("GANANCIA_ACIERTO", None)
         COSTO_ESTIMULO = _cfg.get("COSTO_ESTIMULO", None)
+        FINAL_TRAIN = _cfg.get("FINAL_TRAIN", [])
+        FINAL_PREDIC = _cfg.get("FINAL_PREDIC", "")
 
 except Exception as e:
     logger.error(f"Error al cargar el archivo de configuracion: {e}")
