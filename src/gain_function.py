@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from .conf import GANANCIA_ACIERTO, COSTO_ESTIMULO
+from .config import GANANCIA_ACIERTO, COSTO_ESTIMULO
 import logging
 
 logger = logging.getLogger(__name__)
