@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from .config import GANANCIA_ACIERTO, COSTO_ESTIMULO
 import logging
+import polars as pl
 
 logger = logging.getLogger(__name__)
 

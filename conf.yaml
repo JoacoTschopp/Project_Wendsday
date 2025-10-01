@@ -1,4 +1,4 @@
-STUDY_NAME : "Prueba_completa_150trial"
+STUDY_NAME : "Prueba_completa_150trial_cv"
 
 competencia01:
     DATA_PATH: "./data/competencia.csv"

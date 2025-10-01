@@ -158,7 +158,7 @@ def optimizar_con_cv(df, n_trials=50) -> optuna.Study:
     study = optuna.create_study(
         direction='maximize',
         study_name=study_name,
-        sampler=optuna.samplers.TPESampler(seed=SEMILLA[0] if isinstance(SEMILLA, list) else SEMILLA)
+        sampler=optuna.samplers.TPESampler(seed=SEMILLA[0])
     )
   
     # Ejecutar optimización
