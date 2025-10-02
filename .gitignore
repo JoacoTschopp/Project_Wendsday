@@ -5,5 +5,4 @@ data/
 .env
 
 data/competencia.csv
-resultados/*
-predict/*
+

@@ -1,4 +1,4 @@
-STUDY_NAME : "Prueba_completa_150trial_cv"
+STUDY_NAME : "Prueba_completa_BO150_cv"
 
 competencia01:
     DATA_PATH: "./data/competencia.csv"
@@ -21,4 +21,4 @@ parametros_lgb:
     max_depth: [3, 15]
     reg_alpha: [0.0, 10.0]
     reg_lambda: [0.0, 10.0]
-    bin: [30, 31]
+    bin: [28, 32]
