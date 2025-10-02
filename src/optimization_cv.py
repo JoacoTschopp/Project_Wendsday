@@ -10,6 +10,7 @@ import json
 import os
 from .config import *
 from .gain_function import calcular_ganancia, ganancia_evaluator
+from .loader import convertir_clase_ternaria_a_target
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +51,7 @@ def objetivo_ganancia_cv(trial, df) -> float:
         periodos_cv = [MES_TRAIN, MES_VALIDACION]
   
     df_cv = df[df['foto_mes'].isin(periodos_cv)]
+    df_cv = convertir_clase_ternaria_a_target(df_cv, baja_2_1=True)
   
     # Preparar features y target
     features_cols = [col for col in df_cv.columns if col not in ['clase_ternaria']]
@@ -87,11 +89,11 @@ def objetivo_ganancia_cv(trial, df) -> float:
     logger.debug(f"Trial {trial.number}: Mejor iteración = {best_iteration}")
   
     # Guardar iteración con información de CV
-    guardar_iteracion_cv(trial, ganancia_maxima, ganancias_cv, ganancia_std)
+    guardar_iteracion_cv(trial, ganancia_maxima)
   
     return ganancia_maxima
 
-def guardar_iteracion_cv(trial, ganancia_maxima, ganancias_cv, ganancia_std, archivo_base=None):
+def guardar_iteracion_cv(trial, ganancia_maxima, archivo_base=None):
     """
     Guarda cada iteración de CV en archivo JSON con información detallada.
   

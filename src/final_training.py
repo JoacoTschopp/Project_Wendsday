@@ -6,7 +6,8 @@ import os
 from datetime import datetime
 from .config import FINAL_TRAIN, FINAL_PREDIC, SEMILLA
 from .best_params import cargar_mejores_hiperparametros
-from .gain_function import ganancia_lgb_binary
+from .gain_function import ganancia_lgb_binary, ganancia_evaluator
+from .loader import convertir_clase_ternaria_a_target
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +48,7 @@ def preparar_datos_entrenamiento_final(df: pd.DataFrame) -> tuple:
     
     return X_train, y_train, X_predic, clientes_predic
 
-def entrenar_modelo_final(X_train: pd.DataFrame, y_train: pd.Series, mejores_params: dict) -> lgb.Booster:
+def entrenar_modelo_final(df: pd.DataFrame, mejores_params: dict) -> lgb.Booster:
     """
     Entrena el modelo final con los mejores hiperparámetros.
     
@@ -61,6 +62,16 @@ def entrenar_modelo_final(X_train: pd.DataFrame, y_train: pd.Series, mejores_par
     """
     logger.info("Iniciando entrenamiento del modelo final")
     
+    # Preparar datos de entrenamiento (TRAIN + VALIDACION + TEST)
+    df_train_final = df[df['foto_mes'].isin(FINAL_TRAIN)]
+    df_train_final = convertir_clase_ternaria_a_target(df_train_final, baja_2_1=True)
+
+    # Usar target (clase_ternaria ya convertida a binaria)
+    y_train = df_train_final['clase_ternaria'].values
+        
+    # Features: usar todas las columnas excepto target
+    X_train = df_train_final.drop(columns=['clase_ternaria'])
+
     # Configurar parámetros del modelo
     params = {
         'objective': 'binary',
@@ -78,11 +89,11 @@ def entrenar_modelo_final(X_train: pd.DataFrame, y_train: pd.Series, mejores_par
     modelo = lgb.train(
         params,
         train_data,
-        num_boost_round=mejores_params.get('num_boost_round', 1000),
+        num_boost_round=mejores_params.get('num_boost_round', 300),
         callbacks=[
             lgb.log_evaluation(period=100)
         ],
-        feval=ganancia_lgb_binary
+        feval=ganancia_evaluator
     )
     
     return modelo
