@@ -275,7 +275,9 @@ def generar_grafico_test_completo(df: pd.DataFrame) -> str:
     mejores_params = cargar_mejores_hiperparametros()
     
     # Obtener datos de test (comunes para todas las semillas)
-    df_test = convertir_clase_ternaria_a_target(df, baja_2_1=False)
+    # Crear copia para evitar modificar el DataFrame original
+    df_copy = df.copy()
+    df_test = convertir_clase_ternaria_a_target(df_copy, baja_2_1=False)
     df_test = df_test[df_test['foto_mes'] == MES_TEST]
     y_true = df_test['clase_ternaria'].values
     

@@ -131,7 +131,7 @@ def nombre_salida_por_defecto(ruta_json: str) -> str:
 
 def main():
     parser = argparse.ArgumentParser(description='Generar gráfico de tendencia (trial vs ganancia) desde un JSON de resultados.')
-    parser.add_argument('--json', type=str, default=r'c:\\Users\\tschoppj\\proyectos_maestria\\Project_Wendsday\\resultados\\Prueba_completa_BO150_cv_iteraciones.json',
+    parser.add_argument('--json', type=str, default=r'c:\\Users\\tschoppj\\proyectos_maestria\\Project_Wendsday\\resultados\\Con_100trials_cv_01_iteraciones.json',
                         help='Ruta al archivo JSON con los trials. Por defecto usa el archivo de resultados actual.')
     parser.add_argument('--salida', type=str, default=None,
                         help='Ruta de salida del PNG/JPG. Si no se especifica, se genera automáticamente en la carpeta resultados/.')

@@ -1,0 +1,22 @@
+﻿2025-10-03 14:54:07,585 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-03 14:54:07,586 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-03 14:54:15,210 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 3 atributos
+2025-10-03 14:54:20,285 - INFO - __name__ 56 - Feature engineering completado. DataFrame resultante con 161 columnas
+2025-10-03 14:54:20,286 - INFO - __main__ 49 - Feature Engineering completado: (978439, 161)
+2025-10-03 14:54:20,286 - INFO - __main__ 69 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-03 14:54:20,299 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_100trials_cv_01_iteraciones.json
+2025-10-03 14:54:20,300 - INFO - src.best_params 35 - Mejor ganancia encontrada: 540,616,000
+2025-10-03 14:54:20,300 - INFO - src.best_params 36 - Trial número: 82
+2025-10-03 14:54:20,300 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 264, 'learning_rate': 0.10103271794131473, 'feature_fraction': 0.8307360032803072, 'bagging_fraction': 0.7523425679258137, 'min_child_samples': 14, 'max_depth': 15, 'reg_alpha': 0.7725393327526533, 'reg_lambda': 8.442827470540792, 'bin': 126}
+2025-10-03 14:54:20,300 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-03 14:54:20,300 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-03 14:54:20,983 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-03 14:54:21,112 - INFO - src.loader 52 - Conversión completada:
+2025-10-03 14:54:21,112 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-03 14:54:21,112 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-03 14:54:21,112 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-03 14:54:21,112 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-03 14:54:21,247 - INFO - src.loader 52 - Conversión completada:
+2025-10-03 14:54:21,247 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-03 14:54:21,247 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-03 14:54:21,247 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos

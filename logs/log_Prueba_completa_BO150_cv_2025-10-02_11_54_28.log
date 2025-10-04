@@ -1,0 +1,128 @@
+﻿2025-10-02 11:54:28,473 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-02 11:54:28,473 - INFO - __name__ 8 - Cargando dataset desde ./data/competencia.csv
+2025-10-02 11:54:34,036 - INFO - __name__ 11 - Dataset cargado con 978439 filas y 155 columnas
+2025-10-02 11:54:34,036 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 3 atributos
+2025-10-02 11:54:38,482 - INFO - __name__ 56 - Feature engineering completado. DataFrame resultante con 161 columnas
+2025-10-02 11:54:38,482 - INFO - __main__ 49 - Feature Engineering completado: (978439, 161)
+2025-10-02 11:54:38,484 - INFO - __main__ 69 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-02 11:54:38,484 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Prueba_completa_BO150_cv_iteraciones.json
+2025-10-02 11:54:38,484 - INFO - src.best_params 35 - Mejor ganancia encontrada: 546,608,000
+2025-10-02 11:54:38,485 - INFO - src.best_params 36 - Trial número: 145
+2025-10-02 11:54:38,485 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 265, 'learning_rate': 0.06269485632063582, 'feature_fraction': 0.9044707935928402, 'bagging_fraction': 0.9596402760640228, 'min_child_samples': 15, 'max_depth': 15, 'reg_alpha': 0.32576151210420057, 'reg_lambda': 7.2771174653871356, 'bin': 32}
+2025-10-02 11:54:38,485 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-02 11:54:38,485 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-02 11:54:38,485 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:54:38,900 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:54:38,900 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:54:38,900 - INFO - __name__ 63 -   Binario - 0: 971054, 1: 7385
+2025-10-02 11:54:38,900 - INFO - __name__ 64 -   Distribución: 0.75% casos positivos
+2025-10-02 11:54:38,900 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:54:39,297 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:54:39,298 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:54:39,298 - INFO - __name__ 63 -   Binario - 0: 974501, 1: 3938
+2025-10-02 11:54:39,298 - INFO - __name__ 64 -   Distribución: 0.40% casos positivos
+2025-10-02 11:54:40,051 - INFO - src.test_evaluation 60 - Semilla de entrenamiento: 811157
+2025-10-02 11:54:51,353 - INFO - src.test_evaluation 146 - Resultados guardados en resultados/Prueba_completa_BO150_cv_test_results_20251002_115451.json
+2025-10-02 11:54:51,353 - INFO - __main__ 83 - === GRAFICO DE TEST ===
+2025-10-02 11:54:51,353 - INFO - src.grafico_test 272 - === INICIANDO GENERACIÓN DE GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS ===
+2025-10-02 11:54:51,354 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Prueba_completa_BO150_cv_iteraciones.json
+2025-10-02 11:54:51,354 - INFO - src.best_params 35 - Mejor ganancia encontrada: 546,608,000
+2025-10-02 11:54:51,354 - INFO - src.best_params 36 - Trial número: 145
+2025-10-02 11:54:51,355 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 265, 'learning_rate': 0.06269485632063582, 'feature_fraction': 0.9044707935928402, 'bagging_fraction': 0.9596402760640228, 'min_child_samples': 15, 'max_depth': 15, 'reg_alpha': 0.32576151210420057, 'reg_lambda': 7.2771174653871356, 'bin': 32}
+2025-10-02 11:54:51,355 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:54:51,789 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:54:51,789 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:54:51,789 - INFO - __name__ 63 -   Binario - 0: 974501, 1: 3938
+2025-10-02 11:54:51,789 - INFO - __name__ 64 -   Distribución: 0.40% casos positivos
+2025-10-02 11:54:51,983 - INFO - src.grafico_test 288 - Entrenando con semilla 811157 (1/5)
+2025-10-02 11:54:51,983 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-02 11:54:51,983 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-02 11:54:51,984 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:54:52,418 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:54:52,419 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:54:52,419 - INFO - __name__ 63 -   Binario - 0: 971054, 1: 7385
+2025-10-02 11:54:52,419 - INFO - __name__ 64 -   Distribución: 0.75% casos positivos
+2025-10-02 11:54:52,420 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:54:52,807 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:54:52,807 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:54:52,807 - INFO - __name__ 63 -   Binario - 0: 974501, 1: 3938
+2025-10-02 11:54:52,807 - INFO - __name__ 64 -   Distribución: 0.40% casos positivos
+2025-10-02 11:54:53,700 - INFO - src.test_evaluation 60 - Semilla de entrenamiento: 811157
+2025-10-02 11:55:42,348 - INFO - src.grafico_test 310 -   - Ganancia máxima con semilla 811157: 330,580,000
+2025-10-02 11:55:42,348 - INFO - src.grafico_test 288 - Entrenando con semilla 502717 (2/5)
+2025-10-02 11:55:42,349 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-02 11:55:42,349 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-02 11:55:42,349 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:55:42,767 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:55:42,767 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:55:42,767 - INFO - __name__ 63 -   Binario - 0: 971054, 1: 7385
+2025-10-02 11:55:42,767 - INFO - __name__ 64 -   Distribución: 0.75% casos positivos
+2025-10-02 11:55:42,767 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:55:43,156 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:55:43,158 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:55:43,158 - INFO - __name__ 63 -   Binario - 0: 974501, 1: 3938
+2025-10-02 11:55:43,158 - INFO - __name__ 64 -   Distribución: 0.40% casos positivos
+2025-10-02 11:55:43,910 - INFO - src.test_evaluation 60 - Semilla de entrenamiento: 502717
+2025-10-02 11:56:31,807 - INFO - src.grafico_test 310 -   - Ganancia máxima con semilla 502717: 329,920,000
+2025-10-02 11:56:31,807 - INFO - src.grafico_test 288 - Entrenando con semilla 782911 (3/5)
+2025-10-02 11:56:31,807 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-02 11:56:31,807 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-02 11:56:31,807 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:56:32,226 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:56:32,226 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:56:32,226 - INFO - __name__ 63 -   Binario - 0: 971054, 1: 7385
+2025-10-02 11:56:32,226 - INFO - __name__ 64 -   Distribución: 0.75% casos positivos
+2025-10-02 11:56:32,226 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:56:32,625 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:56:32,626 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:56:32,626 - INFO - __name__ 63 -   Binario - 0: 974501, 1: 3938
+2025-10-02 11:56:32,626 - INFO - __name__ 64 -   Distribución: 0.40% casos positivos
+2025-10-02 11:56:33,400 - INFO - src.test_evaluation 60 - Semilla de entrenamiento: 782911
+2025-10-02 11:57:21,846 - INFO - src.grafico_test 310 -   - Ganancia máxima con semilla 782911: 331,920,000
+2025-10-02 11:57:21,846 - INFO - src.grafico_test 288 - Entrenando con semilla 464939 (4/5)
+2025-10-02 11:57:21,847 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-02 11:57:21,847 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-02 11:57:21,847 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:57:22,275 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:57:22,275 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:57:22,275 - INFO - __name__ 63 -   Binario - 0: 971054, 1: 7385
+2025-10-02 11:57:22,275 - INFO - __name__ 64 -   Distribución: 0.75% casos positivos
+2025-10-02 11:57:22,275 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:57:22,692 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:57:22,692 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:57:22,692 - INFO - __name__ 63 -   Binario - 0: 974501, 1: 3938
+2025-10-02 11:57:22,692 - INFO - __name__ 64 -   Distribución: 0.40% casos positivos
+2025-10-02 11:57:23,456 - INFO - src.test_evaluation 60 - Semilla de entrenamiento: 464939
+2025-10-02 11:58:12,947 - INFO - src.grafico_test 310 -   - Ganancia máxima con semilla 464939: 325,060,000
+2025-10-02 11:58:12,947 - INFO - src.grafico_test 288 - Entrenando con semilla 213713 (5/5)
+2025-10-02 11:58:12,947 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-02 11:58:12,947 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-02 11:58:12,947 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:58:13,396 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:58:13,396 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:58:13,396 - INFO - __name__ 63 -   Binario - 0: 971054, 1: 7385
+2025-10-02 11:58:13,396 - INFO - __name__ 64 -   Distribución: 0.75% casos positivos
+2025-10-02 11:58:13,397 - INFO - __name__ 33 - Convirtiendo clase_ternaria a target binario
+2025-10-02 11:58:13,817 - INFO - __name__ 61 - Conversión completada:
+2025-10-02 11:58:13,818 - INFO - __name__ 62 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-02 11:58:13,818 - INFO - __name__ 63 -   Binario - 0: 974501, 1: 3938
+2025-10-02 11:58:13,818 - INFO - __name__ 64 -   Distribución: 0.40% casos positivos
+2025-10-02 11:58:14,579 - INFO - src.test_evaluation 60 - Semilla de entrenamiento: 213713
+2025-10-02 11:59:04,162 - INFO - src.grafico_test 310 -   - Ganancia máxima con semilla 213713: 328,180,000
+2025-10-02 11:59:04,166 - INFO - src.grafico_test 186 - === CREANDO GRÁFICO COMPARATIVO MÚLTIPLES SEMILLAS ===
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 246 - Estadísticas comparativas del gráfico:
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 247 -   - Ganancia máxima global: 331,920,000
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 248 -   - Ganancia máxima promedio: 329,132,000
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 249 -   - Desviación estándar de ganancias: 2,365,505
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 250 -   - Corte óptimo promedio: 9,062 clientes
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 251 -   - Desviación estándar de cortes: 920 clientes
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 252 -   - Umbral de filtrado: 219,067,200 (66% del máximo global)
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 255 -   - Semilla 811157: Max=330,580,000, Corte=9,430
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 255 -   - Semilla 502717: Max=329,920,000, Corte=7,943
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 255 -   - Semilla 782911: Max=331,920,000, Corte=10,603
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 255 -   - Semilla 464939: Max=325,060,000, Corte=8,386
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 255 -   - Semilla 213713: Max=328,180,000, Corte=8,950
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 257 - Gráfico comparativo guardado en: resultados/Prueba_completa_BO150_cv_grafico_comparativo_semillas_20251002_115904.jpg
+2025-10-02 11:59:04,506 - INFO - src.grafico_test 315 - === GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS COMPLETADO ===
+2025-10-02 11:59:04,523 - INFO - __main__ 85 - ✅ Gráfico generado: resultados/Prueba_completa_BO150_cv_grafico_comparativo_semillas_20251002_115904.jpg
+2025-10-02 11:59:04,523 - INFO - __main__ 117 - >>> Ejecución finalizada. Revisar logs para mas detalles.

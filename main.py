@@ -52,7 +52,7 @@ def main():
     #df_fe = convertir_clase_ternaria_a_target(df_fe)
     
     #03 Ejecutar optimizacion de hiperparametros
-    #study = optimizar_con_cv(df_fe, n_trials=150)
+    #study = optimizar_con_cv(df_fe, n_trials=100)
     
     #04 Análisis adicional
     #logger.info("=== ANÁLISIS DE RESULTADOS ===")
@@ -75,16 +75,14 @@ def main():
     # Guardar resultados de test
     guardar_resultados_test(ganancia_test[0])
     
-    """
     # Resumen de evaluación en test
     logger.info("=== RESUMEN DE EVALUACIÓN EN TEST ===")
     logger.info(f"✅ Ganancia en test: {ganancia_test[0]:,.0f}")
-    """
+    
     logger.info("=== GRAFICO DE TEST ===")
     ruta_grafico = generar_grafico_test_completo(df_fe)
     logger.info(f"✅ Gráfico generado: {ruta_grafico}")
     
-    """
     #06 Entrenar modelo final
     logger.info("=== ENTRENAMIENTO FINAL ===")
  
@@ -113,7 +111,6 @@ def main():
     logger.info(f"📁 Archivo de salida: {archivo_salida}")
     logger.info(f"📝 Log detallado: logs/{nombre_log}")
 
-    """
     logger.info(f">>> Ejecución finalizada. Revisar logs para mas detalles.")
 
 if __name__ == "__main__":
