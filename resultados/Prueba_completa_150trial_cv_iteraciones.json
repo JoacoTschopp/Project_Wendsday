@@ -1,0 +1,19 @@
+[
+  {
+    "trial_number": 0,
+    "params": {
+      "num_leaves": 276,
+      "learning_rate": 0.047779032305512774,
+      "feature_fraction": 0.5827306279102012,
+      "bagging_fraction": 0.6939263702154677,
+      "min_child_samples": 75,
+      "max_depth": 15,
+      "reg_alpha": 2.748944616395901,
+      "reg_lambda": 0.9117717611058351,
+      "bin": 30
+    },
+    "value": 525116000.0,
+    "datetime": "2025-10-01T16:56:27.746025",
+    "state": "COMPLETE"
+  }
+]
