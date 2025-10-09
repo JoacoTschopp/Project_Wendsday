@@ -42,7 +42,7 @@
 ```
 
 - **Test en 202104**: con 20 semillas
-
+![1760040869262](image/ComparaciondeCV/1760040869262.png)
 ---
 
 ## Entrenamiento de 50 iteraciones · Meses 202101 + 202102 + 202103 + 202104
