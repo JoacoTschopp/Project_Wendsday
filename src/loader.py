@@ -40,10 +40,10 @@ def convertir_clase_ternaria_a_target(df: pd.DataFrame, baja_2_1=True) -> pd.Dat
     # Modificar el DataFrame usando .loc para evitar SettingWithCopyWarning
     if baja_2_1:
         # Convertir clase_ternaria a binario usando numpy.where para mejorar rendimiento
-        df.loc[:, 'clase_ternaria'] = np.where(df['clase_ternaria'] == 'CONTINUA', 0, 1)
+        df.loc[:, 'clase_ternaria'] = np.where(df['clase_ternaria'] == 'CONTINUA', 0, 1).astype(np.int8)
     else:
         # Convertir BAJA+2 a 1, todo lo demás a 0
-        df.loc[:, 'clase_ternaria'] = np.where(df['clase_ternaria'] == 'BAJA+2', 1, 0)
+        df.loc[:, 'clase_ternaria'] = np.where(df['clase_ternaria'] == 'BAJA+2', 1, 0).astype(np.int8)
         
     # Log de la conversión
     n_ceros = (df['clase_ternaria'] == 0).sum()

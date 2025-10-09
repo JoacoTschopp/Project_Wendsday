@@ -1,0 +1,12 @@
+﻿2025-10-09 09:50:13,967 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-09 09:50:13,967 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-09 09:50:19,371 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 3 atributos
+2025-10-09 09:50:23,625 - INFO - __name__ 56 - Feature engineering completado. DataFrame resultante con 161 columnas
+2025-10-09 09:50:23,625 - INFO - __main__ 49 - Feature Engineering completado: (978439, 161)
+2025-10-09 09:50:23,625 - INFO - src.optimization_cv 156 - Iniciando optimización con CV - 50 trials
+2025-10-09 09:50:23,625 - INFO - src.optimization_cv 157 - Configuración CV: períodos=[202101, 202102, 202103, 202104]
+2025-10-09 09:50:23,925 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:50:24,016 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:50:24,018 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:50:24,018 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 09:50:24,018 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos

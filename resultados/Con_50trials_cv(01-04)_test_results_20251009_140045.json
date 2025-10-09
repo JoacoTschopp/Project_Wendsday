@@ -1,0 +1,26 @@
+[
+  {
+    "Mes_test": 202104,
+    "ganancia_test": 2147467296.0,
+    "datetime": "2025-10-09T14:00:45.494215",
+    "state": "COMPLETE",
+    "configuracion": {
+      "semilla": [
+        811157,
+        502717,
+        782911,
+        464939,
+        213713
+      ],
+      "meses_train": [
+        202101,
+        202102,
+        202103,
+        202103
+      ]
+    },
+    "resultados": {
+      "ganancia_test": 2147467296.0
+    }
+  }
+]

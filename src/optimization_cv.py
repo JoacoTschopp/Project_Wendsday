@@ -8,13 +8,39 @@ import logging
 from datetime import datetime
 import json
 import os
-from .config import *
-from .gain_function import calcular_ganancia, ganancia_evaluator
-from .loader import convertir_clase_ternaria_a_target
 
-logger = logging.getLogger(__name__)
+def _aplicar_undersampling(df: pd.DataFrame, ratio: float, trial_number: int) -> pd.DataFrame:
+    if ratio <= 0:
+        raise ValueError("El ratio de undersampling debe ser mayor que 0")
 
-def objetivo_ganancia_cv(trial, df) -> float:
+    clase_mayoritaria = df[df['clase_ternaria'] == 0]
+    clase_minoritaria = df[df['clase_ternaria'] == 1]
+
+    if clase_mayoritaria.empty or clase_minoritaria.empty:
+        logger.warning("No se puede aplicar undersampling: una de las clases está vacía")
+        return df
+
+    muestra_mayoritaria = int(len(clase_mayoritaria) * ratio)
+    muestra_mayoritaria = max(muestra_mayoritaria, len(clase_minoritaria))
+    muestra_mayoritaria = min(muestra_mayoritaria, len(clase_mayoritaria))
+
+    mayoritaria_sampleada = clase_mayoritaria.sample(
+        n=muestra_mayoritaria,
+        random_state=SEMILLA[0] + trial_number,
+        replace=False
+    )
+
+    df_sampleado = pd.concat([mayoritaria_sampleada, clase_minoritaria], axis=0)
+    df_sampleado = df_sampleado.sample(frac=1.0, random_state=SEMILLA[0] + trial_number).reset_index(drop=True)
+
+    logger.debug(
+        f"Trial {trial_number}: undersampling aplicado - clase 0: {len(mayoritaria_sampleada)}, clase 1: {len(clase_minoritaria)}"
+    )
+
+    return df_sampleado
+
+
+def objetivo_ganancia_cv(trial, df, undersampling: float = 1.0) -> float:
     """
     Función objetivo con Cross Validation que maximiza ganancia promedio.
     Utiliza lgb.cv() con estratificación interna y métrica personalizada.
@@ -49,12 +75,16 @@ def objetivo_ganancia_cv(trial, df) -> float:
         periodos_cv = MES_TRAIN + [MES_VALIDACION]
     else:
         periodos_cv = [MES_TRAIN, MES_VALIDACION]
-  
-    df_cv = df[df['foto_mes'].isin(periodos_cv)]
+
+    df_cv = df[df['foto_mes'].isin(periodos_cv)].copy()
     df_cv = convertir_clase_ternaria_a_target(df_cv, baja_2_1=True)
-  
+    df_cv['clase_ternaria'] = df_cv['clase_ternaria'].astype(np.int8)
+
+    if undersampling < 1.0:
+        df_cv = _aplicar_undersampling(df_cv, undersampling, trial.number)
+
     # Preparar features y target
-    features_cols = [col for col in df_cv.columns if col not in ['clase_ternaria']]
+    features_cols = [col for col in df_cv.columns if col != 'clase_ternaria']
     X = df_cv[features_cols]
     y = df_cv['clase_ternaria']
   
@@ -62,7 +92,6 @@ def objetivo_ganancia_cv(trial, df) -> float:
   
     # Crear dataset de LightGBM
     dataset = lgb.Dataset(X, label=y)
-
   
     # Ejecutar Cross Validation con lgb.cv()
     cv_results = lgb.cv(
@@ -140,7 +169,7 @@ def guardar_iteracion_cv(trial, ganancia_maxima, archivo_base=None):
   
     logger.info(f"Iteración CV {trial.number} guardada - Ganancia: {ganancia_maxima:,.0f}")
 
-def optimizar_con_cv(df, n_trials=50) -> optuna.Study:
+def optimizar_con_cv(df, n_trials=50, undersampling: float = 1.0) -> optuna.Study:
     """
     Ejecuta optimización bayesiana con Cross Validation.
   
@@ -164,7 +193,7 @@ def optimizar_con_cv(df, n_trials=50) -> optuna.Study:
     )
   
     # Ejecutar optimización
-    study.optimize(lambda trial: objetivo_ganancia_cv(trial, df), n_trials=n_trials)
+    study.optimize(lambda trial: objetivo_ganancia_cv(trial, df, undersampling), n_trials=n_trials)
   
     # Resultados
     logger.info(f"Optimización CV completada:")

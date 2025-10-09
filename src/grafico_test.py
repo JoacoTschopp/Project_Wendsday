@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import logging
 import os
+import math
 from datetime import datetime
 
 # Importar configuración y funciones existentes
@@ -14,6 +15,54 @@ from .test_evaluation import evaluar_en_test
 from .loader import convertir_clase_ternaria_a_target
 
 logger = logging.getLogger(__name__)
+
+def _es_primo(n: int) -> bool:
+    if n < 2:
+        return False
+    if n in (2, 3):
+        return True
+    if n % 2 == 0 or n % 3 == 0:
+        return False
+    limite = int(math.isqrt(n))
+    i = 5
+    while i <= limite:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+
+def _siguiente_primo_en_rango(candidato: int, minimo: int, maximo: int) -> int:
+    if candidato < minimo:
+        candidato = minimo
+    if candidato % 2 == 0:
+        candidato += 1
+
+    while True:
+        if candidato > maximo:
+            candidato = minimo if minimo % 2 == 1 else minimo + 1
+        if _es_primo(candidato):
+            return candidato
+        candidato += 2
+
+
+def _generar_semillas_primas(tiradas: int, semilla_base: int) -> np.ndarray:
+    rng = np.random.default_rng(semilla_base)
+    digitos = len(str(semilla_base))
+    minimo = 10 ** (digitos - 1)
+    maximo = 10 ** digitos - 1
+
+    semillas = []
+    usados = set()
+
+    while len(semillas) < tiradas:
+        candidato = int(rng.integers(minimo, maximo + 1))
+        primo = _siguiente_primo_en_rango(candidato, minimo, maximo)
+        if primo not in usados:
+            semillas.append(primo)
+            usados.add(primo)
+
+    return np.array(semillas, dtype=np.int64)
 
 
 def calcular_ganancia_acumulada(y_true: np.ndarray, y_pred_proba: np.ndarray) -> np.ndarray:
@@ -189,6 +238,10 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
     plt.style.use('seaborn-v0_8')
     plt.figure(figsize=(16, 10))
     
+    # Lista para almacenar todas las curvas de ganancia para calcular la media
+    todas_las_curvas = []
+    max_len = 0  # Para determinar la longitud máxima de las curvas
+    
     # Calcular umbral común para filtrado (usar el máximo de todas las ganancias máximas)
     ganancia_maxima_global = max(resultado['ganancia_maxima'] for resultado in resultados_por_semilla)
     umbral_ganancia = ganancia_maxima_global * 0.66
@@ -206,6 +259,10 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
         x_filtrado = np.where(indices_filtrados)[0]
         y_filtrado = ganancias_acumuladas[indices_filtrados]
         
+        # Almacenar la curva completa para calcular la media después
+        todas_las_curvas.append(ganancias_acumuladas)
+        max_len = max(max_len, len(ganancias_acumuladas))
+        
         # Graficar curva
         plt.plot(x_filtrado, y_filtrado, 
                 color=color, linewidth=2, alpha=0.8, 
@@ -217,6 +274,49 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
         
         # Agregar línea vertical para el corte óptimo de esta semilla
         plt.axvline(x=indice_maximo, color=color, linestyle='--', alpha=0.5, linewidth=1)
+    
+    # Calcular la curva media
+    # Primero, asegurar que todas las curvas tengan la misma longitud
+    curvas_normalizadas = []
+    for curva in todas_las_curvas:
+        # Si la curva es más corta que max_len, rellenar con el último valor
+        if len(curva) < max_len:
+            padding = np.full(max_len - len(curva), curva[-1])
+            curva_normalizada = np.concatenate([curva, padding])
+        else:
+            curva_normalizada = curva
+        curvas_normalizadas.append(curva_normalizada)
+    
+    # Calcular la media de todas las curvas
+    curva_media = np.mean(curvas_normalizadas, axis=0)
+    
+    # Encontrar el punto máximo de la curva media
+    indice_maximo_media = np.argmax(curva_media)
+    ganancia_maxima_media = curva_media[indice_maximo_media]
+    
+    # Filtrar la curva media para mostrar solo los puntos relevantes
+    indices_filtrados_media = curva_media >= umbral_ganancia
+    x_filtrado_media = np.where(indices_filtrados_media)[0]
+    y_filtrado_media = curva_media[indices_filtrados_media]
+    
+    # Graficar la curva media con un estilo destacado
+    plt.plot(x_filtrado_media, y_filtrado_media, 
+            color='black', linewidth=3.5, alpha=1.0, 
+            label=f'Media (Max: {ganancia_maxima_media:,.0f} en {indice_maximo_media:,} clientes)')
+    
+    # Marcar el punto máximo de la curva media
+    plt.scatter(indice_maximo_media, ganancia_maxima_media, 
+               color='red', s=120, zorder=10, alpha=1.0, marker='*')
+    
+    # Agregar línea vertical para el corte óptimo de la curva media
+    plt.axvline(x=indice_maximo_media, color='red', linestyle='-', alpha=0.7, linewidth=1.5)
+    
+    # Agregar anotación con el número de clientes en el punto máximo
+    plt.annotate(f'Máximo: {ganancia_maxima_media:,.0f}\n{indice_maximo_media:,} clientes', 
+                xy=(indice_maximo_media, ganancia_maxima_media),
+                xytext=(indice_maximo_media + max_len*0.05, ganancia_maxima_media),
+                arrowprops=dict(facecolor='black', shrink=0.05, width=1.5, headwidth=8),
+                fontsize=12, fontweight='bold', bbox=dict(boxstyle="round,pad=0.5", fc="white", alpha=0.8))
     
     # Configurar etiquetas y título
     plt.xlabel('Clientes ordenados por probabilidad', fontsize=12)
@@ -250,6 +350,7 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
     logger.info(f"  - Corte óptimo promedio: {np.mean(indices_maximos):,.0f} clientes")
     logger.info(f"  - Desviación estándar de cortes: {np.std(indices_maximos):,.0f} clientes")
     logger.info(f"  - Umbral de filtrado: {umbral_ganancia:,.0f} (66% del máximo global)")
+    logger.info(f"  - CURVA MEDIA: Ganancia máxima: {ganancia_maxima_media:,.0f} en {indice_maximo_media:,} clientes")
     
     for resultado in resultados_por_semilla:
         logger.info(f"  - Semilla {resultado['semilla']}: Max={resultado['ganancia_maxima']:,.0f}, Corte={resultado['indice_maximo']:,}")
@@ -259,7 +360,7 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
     return ruta_archivo
 
 
-def generar_grafico_test_completo(df: pd.DataFrame) -> str:
+def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int) -> str:
     """
     Función principal que genera el gráfico de test con 5 entrenamientos diferentes usando todas las semillas.
     
@@ -284,9 +385,11 @@ def generar_grafico_test_completo(df: pd.DataFrame) -> str:
     # Lista para almacenar resultados de cada semilla
     resultados_por_semilla = []
     colores = ['blue', 'red', 'green', 'orange', 'purple']
-    
+
+    semillas = _generar_semillas_primas(tiradas, SEMILLA[0])
+
     # Realizar 5 entrenamientos con diferentes semillas
-    for i, semilla in enumerate(SEMILLA[:5]):  # Usar las primeras 5 semillas
+    for i, semilla in enumerate(semillas):  # Usar las primeras 5 semillas
         logger.info(f"Entrenando con semilla {semilla} ({i+1}/5)")
         
         # Obtener predicciones para esta semilla
@@ -306,7 +409,7 @@ def generar_grafico_test_completo(df: pd.DataFrame) -> str:
             'ganancias_acumuladas': ganancias_acumuladas,
             'ganancia_maxima': ganancia_maxima,
             'indice_maximo': indice_maximo,
-            'color': colores[i]
+            'color': colores[i % len(colores)]
         })
         
         logger.info(f"  - Ganancia máxima con semilla {semilla}: {ganancia_maxima:,.0f}")

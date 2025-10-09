@@ -1,0 +1,440 @@
+﻿2025-10-09 10:09:41,140 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-09 10:09:41,140 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-09 10:09:46,381 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 3 atributos
+2025-10-09 10:09:50,546 - INFO - __name__ 56 - Feature engineering completado. DataFrame resultante con 161 columnas
+2025-10-09 10:09:50,546 - INFO - __main__ 49 - Feature Engineering completado: (978439, 161)
+2025-10-09 10:09:50,546 - INFO - src.optimization_cv 156 - Iniciando optimización con CV - 50 trials
+2025-10-09 10:09:50,547 - INFO - src.optimization_cv 157 - Configuración CV: períodos=[202101, 202102, 202103, 202104]
+2025-10-09 10:09:51,081 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:09:51,164 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:09:51,164 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:09:51,164 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:09:51,164 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:14:00,385 - INFO - src.optimization_cv 141 - Iteración CV 0 guardada - Ganancia: 765,484,000
+2025-10-09 10:14:01,242 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:14:01,367 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:14:01,368 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:14:01,369 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:14:01,369 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:16:59,027 - INFO - src.optimization_cv 141 - Iteración CV 1 guardada - Ganancia: 681,848,000
+2025-10-09 10:16:59,900 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:17:00,024 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:17:00,024 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:17:00,024 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:17:00,024 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:19:13,817 - INFO - src.optimization_cv 141 - Iteración CV 2 guardada - Ganancia: 682,764,000
+2025-10-09 10:19:14,644 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:19:14,765 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:19:14,765 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:19:14,765 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:19:14,765 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:22:55,569 - INFO - src.optimization_cv 141 - Iteración CV 3 guardada - Ganancia: 742,104,000
+2025-10-09 10:22:56,478 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:22:56,604 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:22:56,604 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:22:56,605 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:22:56,605 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:26:23,157 - INFO - src.optimization_cv 141 - Iteración CV 4 guardada - Ganancia: 740,784,000
+2025-10-09 10:26:24,148 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:26:24,275 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:26:24,276 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:26:24,276 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:26:24,276 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:30:15,310 - INFO - src.optimization_cv 141 - Iteración CV 5 guardada - Ganancia: 725,748,000
+2025-10-09 10:30:16,205 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:30:16,343 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:30:16,345 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:30:16,345 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:30:16,345 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:33:19,469 - INFO - src.optimization_cv 141 - Iteración CV 6 guardada - Ganancia: 720,016,000
+2025-10-09 10:33:20,413 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:33:20,546 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:33:20,548 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:33:20,548 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:33:20,548 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:36:08,613 - INFO - src.optimization_cv 141 - Iteración CV 7 guardada - Ganancia: 693,332,000
+2025-10-09 10:36:09,544 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:36:09,672 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:36:09,672 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:36:09,672 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:36:09,672 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:40:45,746 - INFO - src.optimization_cv 141 - Iteración CV 8 guardada - Ganancia: 739,536,000
+2025-10-09 10:40:46,670 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:40:46,803 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:40:46,803 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:40:46,805 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:40:46,805 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:45:44,674 - INFO - src.optimization_cv 141 - Iteración CV 9 guardada - Ganancia: 742,880,000
+2025-10-09 10:45:45,574 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:45:45,706 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:45:45,708 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:45:45,708 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:45:45,709 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:50:07,475 - INFO - src.optimization_cv 141 - Iteración CV 10 guardada - Ganancia: 754,624,000
+2025-10-09 10:50:08,488 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:50:08,610 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:50:08,613 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:50:08,613 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:50:08,613 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:54:32,484 - INFO - src.optimization_cv 141 - Iteración CV 11 guardada - Ganancia: 749,864,000
+2025-10-09 10:54:33,479 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:54:33,606 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:54:33,607 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:54:33,607 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:54:33,607 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 10:58:07,285 - INFO - src.optimization_cv 141 - Iteración CV 12 guardada - Ganancia: 737,204,000
+2025-10-09 10:58:08,223 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 10:58:08,348 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 10:58:08,348 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 10:58:08,348 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 10:58:08,349 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:03:40,481 - INFO - src.optimization_cv 141 - Iteración CV 13 guardada - Ganancia: 756,048,000
+2025-10-09 11:03:41,403 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:03:41,529 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:03:41,530 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:03:41,530 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:03:41,530 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:08:17,018 - INFO - src.optimization_cv 141 - Iteración CV 14 guardada - Ganancia: 755,500,000
+2025-10-09 11:08:17,982 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:08:18,106 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:08:18,106 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:08:18,106 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:08:18,106 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:13:23,888 - INFO - src.optimization_cv 141 - Iteración CV 15 guardada - Ganancia: 731,012,000
+2025-10-09 11:13:24,779 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:13:24,900 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:13:24,900 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:13:24,900 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:13:24,902 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:16:57,933 - INFO - src.optimization_cv 141 - Iteración CV 16 guardada - Ganancia: 753,572,000
+2025-10-09 11:16:58,771 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:16:58,892 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:16:58,894 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:16:58,894 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:16:58,894 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:21:18,008 - INFO - src.optimization_cv 141 - Iteración CV 17 guardada - Ganancia: 759,504,000
+2025-10-09 11:21:18,869 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:21:18,991 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:21:18,991 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:21:18,991 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:21:18,991 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:24:15,660 - INFO - src.optimization_cv 141 - Iteración CV 18 guardada - Ganancia: 727,620,000
+2025-10-09 11:24:16,529 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:24:16,645 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:24:16,646 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:24:16,646 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:24:16,646 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:28:37,665 - INFO - src.optimization_cv 141 - Iteración CV 19 guardada - Ganancia: 741,136,000
+2025-10-09 11:28:38,570 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:28:38,687 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:28:38,688 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:28:38,688 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:28:38,688 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:31:06,229 - INFO - src.optimization_cv 141 - Iteración CV 20 guardada - Ganancia: 710,100,000
+2025-10-09 11:31:07,140 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:31:07,260 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:31:07,261 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:31:07,261 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:31:07,261 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:34:39,206 - INFO - src.optimization_cv 141 - Iteración CV 21 guardada - Ganancia: 751,288,000
+2025-10-09 11:34:40,156 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:34:40,293 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:34:40,293 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:34:40,293 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:34:40,293 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:39:10,254 - INFO - src.optimization_cv 141 - Iteración CV 22 guardada - Ganancia: 763,040,000
+2025-10-09 11:39:11,219 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:39:11,348 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:39:11,348 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:39:11,348 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:39:11,348 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:44:13,771 - INFO - src.optimization_cv 141 - Iteración CV 23 guardada - Ganancia: 759,664,000
+2025-10-09 11:44:14,785 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:44:14,907 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:44:14,909 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:44:14,909 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:44:14,909 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:47:40,807 - INFO - src.optimization_cv 141 - Iteración CV 24 guardada - Ganancia: 758,700,000
+2025-10-09 11:47:41,740 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:47:41,873 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:47:41,874 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:47:41,874 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:47:41,874 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:54:16,089 - INFO - src.optimization_cv 141 - Iteración CV 25 guardada - Ganancia: 760,628,000
+2025-10-09 11:54:17,008 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:54:17,143 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:54:17,143 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:54:17,144 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:54:17,144 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 11:57:21,257 - INFO - src.optimization_cv 141 - Iteración CV 26 guardada - Ganancia: 731,608,000
+2025-10-09 11:57:22,148 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 11:57:22,278 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 11:57:22,278 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 11:57:22,278 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 11:57:22,278 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:02:41,372 - INFO - src.optimization_cv 141 - Iteración CV 27 guardada - Ganancia: 757,336,000
+2025-10-09 12:02:42,353 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:02:42,482 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:02:42,485 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:02:42,485 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:02:42,485 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:06:41,356 - INFO - src.optimization_cv 141 - Iteración CV 28 guardada - Ganancia: 764,508,000
+2025-10-09 12:06:42,256 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:06:42,380 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:06:42,380 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:06:42,380 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:06:42,383 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:10:12,729 - INFO - src.optimization_cv 141 - Iteración CV 29 guardada - Ganancia: 741,988,000
+2025-10-09 12:10:13,616 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:10:13,745 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:10:13,745 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:10:13,745 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:10:13,745 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:13:37,584 - INFO - src.optimization_cv 141 - Iteración CV 30 guardada - Ganancia: 752,308,000
+2025-10-09 12:13:38,548 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:13:38,706 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:13:38,706 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:13:38,706 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:13:38,707 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:18:32,691 - INFO - src.optimization_cv 141 - Iteración CV 31 guardada - Ganancia: 759,116,000
+2025-10-09 12:18:33,553 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:18:33,682 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:18:33,682 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:18:33,683 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:18:33,683 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:21:41,322 - INFO - src.optimization_cv 141 - Iteración CV 32 guardada - Ganancia: 684,452,000
+2025-10-09 12:21:42,141 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:21:42,263 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:21:42,263 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:21:42,263 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:21:42,263 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:28:19,131 - INFO - src.optimization_cv 141 - Iteración CV 33 guardada - Ganancia: 767,656,000
+2025-10-09 12:28:20,035 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:28:20,160 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:28:20,160 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:28:20,160 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:28:20,160 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:32:50,082 - INFO - src.optimization_cv 141 - Iteración CV 34 guardada - Ganancia: 754,292,000
+2025-10-09 12:32:50,959 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:32:51,084 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:32:51,085 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:32:51,085 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:32:51,085 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:35:49,926 - INFO - src.optimization_cv 141 - Iteración CV 35 guardada - Ganancia: 755,200,000
+2025-10-09 12:35:50,842 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:35:50,967 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:35:50,967 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:35:50,968 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:35:50,968 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:42:05,728 - INFO - src.optimization_cv 141 - Iteración CV 36 guardada - Ganancia: 762,152,000
+2025-10-09 12:42:06,580 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:42:06,699 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:42:06,699 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:42:06,699 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:42:06,700 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:43:56,786 - INFO - src.optimization_cv 141 - Iteración CV 37 guardada - Ganancia: 697,008,000
+2025-10-09 12:43:57,729 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:43:57,858 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:43:57,859 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:43:57,859 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:43:57,859 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:51:12,305 - INFO - src.optimization_cv 141 - Iteración CV 38 guardada - Ganancia: 751,436,000
+2025-10-09 12:51:13,184 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:51:13,315 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:51:13,315 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:51:13,315 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:51:13,315 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 12:56:59,571 - INFO - src.optimization_cv 141 - Iteración CV 39 guardada - Ganancia: 761,696,000
+2025-10-09 12:57:00,529 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 12:57:00,674 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 12:57:00,674 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 12:57:00,674 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 12:57:00,674 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:00:49,033 - INFO - src.optimization_cv 141 - Iteración CV 40 guardada - Ganancia: 742,344,000
+2025-10-09 13:00:49,966 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:00:50,118 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:00:50,118 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:00:50,118 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:00:50,119 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:06:07,146 - INFO - src.optimization_cv 141 - Iteración CV 41 guardada - Ganancia: 766,140,000
+2025-10-09 13:06:08,103 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:06:08,235 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:06:08,235 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:06:08,235 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:06:08,235 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:10:53,991 - INFO - src.optimization_cv 141 - Iteración CV 42 guardada - Ganancia: 766,292,000
+2025-10-09 13:10:54,964 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:10:55,096 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:10:55,096 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:10:55,097 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:10:55,097 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:15:18,410 - INFO - src.optimization_cv 141 - Iteración CV 43 guardada - Ganancia: 758,688,000
+2025-10-09 13:15:19,346 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:15:19,471 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:15:19,471 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:15:19,472 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:15:19,472 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:18:17,111 - INFO - src.optimization_cv 141 - Iteración CV 44 guardada - Ganancia: 752,176,000
+2025-10-09 13:18:17,984 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:18:18,106 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:18:18,106 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:18:18,108 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:18:18,108 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:23:05,980 - INFO - src.optimization_cv 141 - Iteración CV 45 guardada - Ganancia: 741,052,000
+2025-10-09 13:23:06,933 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:23:07,064 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:23:07,064 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:23:07,064 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:23:07,064 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:27:00,026 - INFO - src.optimization_cv 141 - Iteración CV 46 guardada - Ganancia: 737,784,000
+2025-10-09 13:27:00,993 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:27:01,115 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:27:01,115 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:27:01,117 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:27:01,117 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:33:57,088 - INFO - src.optimization_cv 141 - Iteración CV 47 guardada - Ganancia: 745,252,000
+2025-10-09 13:33:58,071 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:33:58,191 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:33:58,193 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:33:58,193 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:33:58,193 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:40:05,901 - INFO - src.optimization_cv 141 - Iteración CV 48 guardada - Ganancia: 771,064,000
+2025-10-09 13:40:06,925 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:40:07,046 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:40:07,046 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:40:07,046 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 13:40:07,046 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 13:42:57,032 - INFO - src.optimization_cv 141 - Iteración CV 49 guardada - Ganancia: 751,600,000
+2025-10-09 13:42:57,165 - INFO - src.optimization_cv 170 - Optimización CV completada:
+2025-10-09 13:42:57,166 - INFO - src.optimization_cv 171 -   Mejor ganancia promedio: 771,064,000
+2025-10-09 13:42:57,166 - INFO - src.optimization_cv 172 -   Mejores parámetros: {'num_leaves': 275, 'learning_rate': 0.1124828798037451, 'feature_fraction': 0.5350786363389273, 'bagging_fraction': 0.8384187556476188, 'min_child_samples': 87, 'max_depth': 10, 'reg_alpha': 1.5885878639015094, 'reg_lambda': 5.746900446126809, 'bin': 101}
+2025-10-09 13:42:57,170 - INFO - src.optimization_cv 173 -   Total trials: 50
+2025-10-09 13:42:57,171 - INFO - __main__ 58 - === ANÁLISIS DE RESULTADOS ===
+2025-10-09 13:42:57,201 - INFO - __main__ 62 - Top 5 mejores trials:
+2025-10-09 13:42:57,204 - INFO - __main__ 64 -   Trial 48: 771,064,000
+2025-10-09 13:42:57,204 - INFO - __main__ 64 -   Trial 33: 767,656,000
+2025-10-09 13:42:57,206 - INFO - __main__ 64 -   Trial 42: 766,292,000
+2025-10-09 13:42:57,206 - INFO - __main__ 64 -   Trial 41: 766,140,000
+2025-10-09 13:42:57,206 - INFO - __main__ 64 -   Trial 0: 765,484,000
+2025-10-09 13:42:57,206 - INFO - __main__ 66 - === OPTIMIZACIÓN COMPLETADA ===
+2025-10-09 13:42:57,207 - INFO - __main__ 69 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 13:42:57,207 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_50trials_cv(01-04)_iteraciones.json
+2025-10-09 13:42:57,207 - INFO - src.best_params 35 - Mejor ganancia encontrada: 771,064,000
+2025-10-09 13:42:57,207 - INFO - src.best_params 36 - Trial número: 48
+2025-10-09 13:42:57,207 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 275, 'learning_rate': 0.1124828798037451, 'feature_fraction': 0.5350786363389273, 'bagging_fraction': 0.8384187556476188, 'min_child_samples': 87, 'max_depth': 10, 'reg_alpha': 1.5885878639015094, 'reg_lambda': 5.746900446126809, 'bin': 101}
+2025-10-09 13:42:57,207 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 13:42:57,207 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 13:42:58,065 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:42:58,235 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:42:58,235 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:42:58,235 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 13:42:58,235 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 13:42:58,235 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:42:58,400 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:42:58,400 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:42:58,400 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 13:42:58,401 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 13:42:59,632 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 811157
+2025-10-09 13:43:17,320 - INFO - src.test_evaluation 156 - Resultados guardados en resultados/Con_50trials_cv(01-04)_test_results_20251009_134317.json
+2025-10-09 13:43:17,320 - INFO - __main__ 79 - === RESUMEN DE EVALUACIÓN EN TEST ===
+2025-10-09 13:43:17,321 - INFO - __main__ 80 - ✅ Ganancia en test: 2,147,467,296
+2025-10-09 13:43:17,321 - INFO - __main__ 82 - === GRAFICO DE TEST ===
+2025-10-09 13:43:17,321 - INFO - src.grafico_test 324 - === INICIANDO GENERACIÓN DE GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS ===
+2025-10-09 13:43:17,321 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_50trials_cv(01-04)_iteraciones.json
+2025-10-09 13:43:17,322 - INFO - src.best_params 35 - Mejor ganancia encontrada: 771,064,000
+2025-10-09 13:43:17,322 - INFO - src.best_params 36 - Trial número: 48
+2025-10-09 13:43:17,322 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 275, 'learning_rate': 0.1124828798037451, 'feature_fraction': 0.5350786363389273, 'bagging_fraction': 0.8384187556476188, 'min_child_samples': 87, 'max_depth': 10, 'reg_alpha': 1.5885878639015094, 'reg_lambda': 5.746900446126809, 'bin': 101}
+2025-10-09 13:43:17,745 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:43:17,918 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:43:17,918 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:43:17,918 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 13:43:17,918 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 13:43:18,068 - INFO - src.grafico_test 345 - Entrenando con semilla 267575717 (1/5)
+2025-10-09 13:43:18,070 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 13:43:18,070 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 13:43:18,804 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:43:18,977 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:43:18,977 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:43:18,977 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 13:43:18,977 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 13:43:18,978 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:43:19,141 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:43:19,141 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:43:19,141 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 13:43:19,141 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 13:43:20,340 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 267575717
+2025-10-09 13:46:20,355 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 267575717: 672,380,000
+2025-10-09 13:46:20,355 - INFO - src.grafico_test 345 - Entrenando con semilla 2921956480 (2/5)
+2025-10-09 13:46:20,355 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 13:46:20,355 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 13:46:20,981 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:46:21,117 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:46:21,117 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:46:21,117 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 13:46:21,117 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 13:46:21,117 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:46:21,248 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:46:21,248 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:46:21,248 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 13:46:21,248 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 13:46:22,245 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 2921956480
+2025-10-09 13:49:07,892 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 2921956480: 673,720,000
+2025-10-09 13:49:07,893 - INFO - src.grafico_test 345 - Entrenando con semilla 3646296322 (3/5)
+2025-10-09 13:49:07,893 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 13:49:07,893 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 13:49:08,489 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:49:08,625 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:49:08,625 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:49:08,625 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 13:49:08,625 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 13:49:08,625 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:49:08,753 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:49:08,753 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:49:08,753 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 13:49:08,753 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 13:49:09,709 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3646296322
+2025-10-09 13:51:52,933 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 3646296322: 676,640,000
+2025-10-09 13:51:52,933 - INFO - src.grafico_test 345 - Entrenando con semilla 3919119180 (4/5)
+2025-10-09 13:51:52,933 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 13:51:52,933 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 13:51:53,518 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:51:53,645 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:51:53,645 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:51:53,645 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 13:51:53,647 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 13:51:53,647 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:51:53,770 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:51:53,770 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:51:53,770 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 13:51:53,772 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 13:51:54,724 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3919119180
+2025-10-09 13:54:36,544 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 3919119180: 682,400,000
+2025-10-09 13:54:36,544 - INFO - src.grafico_test 345 - Entrenando con semilla 2031626485 (5/5)
+2025-10-09 13:54:36,544 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 13:54:36,544 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 13:54:37,142 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:54:37,267 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:54:37,267 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:54:37,267 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 13:54:37,267 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 13:54:37,267 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:54:37,390 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:54:37,390 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:54:37,390 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 13:54:37,390 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 13:54:38,364 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 2031626485
+2025-10-09 13:57:20,875 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 2031626485: 680,480,000
+2025-10-09 13:57:20,875 - INFO - src.grafico_test 345 - Entrenando con semilla 3807823223 (6/5)
+2025-10-09 13:57:20,875 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 13:57:20,875 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 13:57:21,511 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:57:21,637 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:57:21,637 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:57:21,637 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 13:57:21,637 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 13:57:21,637 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 13:57:21,761 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 13:57:21,761 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 13:57:21,762 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 13:57:21,762 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 13:57:22,739 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3807823223

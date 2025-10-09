@@ -1,0 +1,37 @@
+﻿2025-10-09 08:03:41,932 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-09 08:03:41,932 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-09 08:03:48,976 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 3 atributos
+2025-10-09 08:03:54,738 - INFO - __name__ 56 - Feature engineering completado. DataFrame resultante con 161 columnas
+2025-10-09 08:03:54,738 - INFO - __main__ 49 - Feature Engineering completado: (978439, 161)
+2025-10-09 08:03:54,738 - INFO - __main__ 69 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:03:54,740 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_100trials_cv_01_iteraciones.json
+2025-10-09 08:03:54,740 - INFO - src.best_params 35 - Mejor ganancia encontrada: 537,372,000
+2025-10-09 08:03:54,740 - INFO - src.best_params 36 - Trial número: 43
+2025-10-09 08:03:54,740 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 278, 'learning_rate': 0.0371401380258487, 'feature_fraction': 0.5819071419859364, 'bagging_fraction': 0.8041169790281475, 'min_child_samples': 81, 'max_depth': 15, 'reg_alpha': 1.6687343874071772, 'reg_lambda': 1.6858080560719633, 'bin': 206}
+2025-10-09 08:03:54,741 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:03:54,741 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:03:55,643 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:03:55,808 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:03:55,810 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:03:55,810 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:03:55,811 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:03:55,811 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:03:56,030 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:03:56,030 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:03:56,030 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:03:56,030 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:03:56,995 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 811157
+2025-10-09 08:04:14,495 - INFO - src.test_evaluation 156 - Resultados guardados en resultados/Con_100trials_cv_01_test_results_20251009_080414.json
+2025-10-09 08:04:14,495 - INFO - __main__ 79 - === RESUMEN DE EVALUACIÓN EN TEST ===
+2025-10-09 08:04:14,495 - INFO - __main__ 80 - ✅ Ganancia en test: 2,147,467,296
+2025-10-09 08:04:14,495 - INFO - __main__ 82 - === GRAFICO DE TEST ===
+2025-10-09 08:04:14,496 - INFO - src.grafico_test 324 - === INICIANDO GENERACIÓN DE GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS ===
+2025-10-09 08:04:14,496 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_100trials_cv_01_iteraciones.json
+2025-10-09 08:04:14,496 - INFO - src.best_params 35 - Mejor ganancia encontrada: 537,372,000
+2025-10-09 08:04:14,496 - INFO - src.best_params 36 - Trial número: 43
+2025-10-09 08:04:14,496 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 278, 'learning_rate': 0.0371401380258487, 'feature_fraction': 0.5819071419859364, 'bagging_fraction': 0.8041169790281475, 'min_child_samples': 81, 'max_depth': 15, 'reg_alpha': 1.6687343874071772, 'reg_lambda': 1.6858080560719633, 'bin': 206}
+2025-10-09 08:04:15,037 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:04:15,224 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:04:15,224 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:04:15,224 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:04:15,224 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos

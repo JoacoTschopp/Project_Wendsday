@@ -1,0 +1,375 @@
+﻿2025-10-09 08:13:14,356 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-09 08:13:14,356 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-09 08:13:20,323 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 3 atributos
+2025-10-09 08:13:24,861 - INFO - __name__ 56 - Feature engineering completado. DataFrame resultante con 161 columnas
+2025-10-09 08:13:24,861 - INFO - __main__ 49 - Feature Engineering completado: (978439, 161)
+2025-10-09 08:13:24,861 - INFO - __main__ 69 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:13:24,864 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_100trials_cv_01_iteraciones.json
+2025-10-09 08:13:24,864 - INFO - src.best_params 35 - Mejor ganancia encontrada: 537,372,000
+2025-10-09 08:13:24,864 - INFO - src.best_params 36 - Trial número: 43
+2025-10-09 08:13:24,864 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 278, 'learning_rate': 0.0371401380258487, 'feature_fraction': 0.5819071419859364, 'bagging_fraction': 0.8041169790281475, 'min_child_samples': 81, 'max_depth': 15, 'reg_alpha': 1.6687343874071772, 'reg_lambda': 1.6858080560719633, 'bin': 206}
+2025-10-09 08:13:24,864 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:13:24,864 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:13:25,546 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:13:25,680 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:13:25,680 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:13:25,680 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:13:25,680 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:13:25,680 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:13:25,811 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:13:25,811 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:13:25,811 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:13:25,811 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:13:26,835 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 811157
+2025-10-09 08:13:34,942 - INFO - src.test_evaluation 156 - Resultados guardados en resultados/Con_100trials_cv_01_test_results_20251009_081334.json
+2025-10-09 08:13:34,942 - INFO - __main__ 79 - === RESUMEN DE EVALUACIÓN EN TEST ===
+2025-10-09 08:13:34,942 - INFO - __main__ 80 - ✅ Ganancia en test: 2,147,467,296
+2025-10-09 08:13:34,942 - INFO - __main__ 82 - === GRAFICO DE TEST ===
+2025-10-09 08:13:34,942 - INFO - src.grafico_test 324 - === INICIANDO GENERACIÓN DE GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS ===
+2025-10-09 08:13:34,942 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_100trials_cv_01_iteraciones.json
+2025-10-09 08:13:34,942 - INFO - src.best_params 35 - Mejor ganancia encontrada: 537,372,000
+2025-10-09 08:13:34,944 - INFO - src.best_params 36 - Trial número: 43
+2025-10-09 08:13:34,944 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 278, 'learning_rate': 0.0371401380258487, 'feature_fraction': 0.5819071419859364, 'bagging_fraction': 0.8041169790281475, 'min_child_samples': 81, 'max_depth': 15, 'reg_alpha': 1.6687343874071772, 'reg_lambda': 1.6858080560719633, 'bin': 206}
+2025-10-09 08:13:35,355 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:13:35,516 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:13:35,516 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:13:35,516 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:13:35,516 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:13:35,644 - INFO - src.grafico_test 345 - Entrenando con semilla 267575717 (1/5)
+2025-10-09 08:13:35,645 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:13:35,645 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:13:36,239 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:13:36,382 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:13:36,382 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:13:36,382 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:13:36,382 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:13:36,382 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:13:36,505 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:13:36,505 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:13:36,505 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:13:36,505 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:13:37,546 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 267575717
+2025-10-09 08:16:41,216 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 267575717: 354,800,000
+2025-10-09 08:16:41,216 - INFO - src.grafico_test 345 - Entrenando con semilla 2921956480 (2/5)
+2025-10-09 08:16:41,216 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:16:41,217 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:16:41,930 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:16:42,104 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:16:42,105 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:16:42,105 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:16:42,105 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:16:42,105 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:16:42,241 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:16:42,241 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:16:42,241 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:16:42,241 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:16:43,205 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 2921956480
+2025-10-09 08:19:53,074 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 2921956480: 359,400,000
+2025-10-09 08:19:53,074 - INFO - src.grafico_test 345 - Entrenando con semilla 3646296322 (3/5)
+2025-10-09 08:19:53,074 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:19:53,074 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:19:53,838 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:19:54,000 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:19:54,000 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:19:54,000 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:19:54,000 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:19:54,000 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:19:54,193 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:19:54,193 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:19:54,193 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:19:54,193 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:19:55,118 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3646296322
+2025-10-09 08:23:13,617 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 3646296322: 357,700,000
+2025-10-09 08:23:13,617 - INFO - src.grafico_test 345 - Entrenando con semilla 3919119180 (4/5)
+2025-10-09 08:23:13,618 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:23:13,618 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:23:14,350 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:23:14,499 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:23:14,499 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:23:14,499 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:23:14,499 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:23:14,500 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:23:14,651 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:23:14,651 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:23:14,651 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:23:14,651 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:23:15,678 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3919119180
+2025-10-09 08:26:33,430 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 3919119180: 360,580,000
+2025-10-09 08:26:33,430 - INFO - src.grafico_test 345 - Entrenando con semilla 2031626485 (5/5)
+2025-10-09 08:26:33,430 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:26:33,430 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:26:34,099 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:26:34,267 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:26:34,267 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:26:34,267 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:26:34,267 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:26:34,268 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:26:34,407 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:26:34,407 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:26:34,408 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:26:34,408 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:26:35,324 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 2031626485
+2025-10-09 08:29:50,084 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 2031626485: 358,020,000
+2025-10-09 08:29:50,084 - INFO - src.grafico_test 345 - Entrenando con semilla 3807823223 (6/5)
+2025-10-09 08:29:50,084 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:29:50,084 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:29:50,824 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:29:50,972 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:29:50,973 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:29:50,973 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:29:50,973 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:29:50,973 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:29:51,140 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:29:51,140 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:29:51,140 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:29:51,140 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:29:52,084 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3807823223
+2025-10-09 08:33:03,250 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 3807823223: 358,280,000
+2025-10-09 08:33:03,250 - INFO - src.grafico_test 345 - Entrenando con semilla 1697411506 (7/5)
+2025-10-09 08:33:03,250 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:33:03,250 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:33:03,954 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:33:04,099 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:33:04,099 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:33:04,099 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:33:04,099 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:33:04,099 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:33:04,242 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:33:04,242 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:33:04,244 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:33:04,244 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:33:05,216 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 1697411506
+2025-10-09 08:36:22,768 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 1697411506: 355,760,000
+2025-10-09 08:36:22,768 - INFO - src.grafico_test 345 - Entrenando con semilla 4020956857 (8/5)
+2025-10-09 08:36:22,768 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:36:22,768 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:36:23,607 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:36:23,761 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:36:23,763 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:36:23,763 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:36:23,763 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:36:23,764 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:36:23,924 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:36:23,924 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:36:23,924 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:36:23,924 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:36:24,971 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 4020956857
+2025-10-09 08:39:44,808 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 4020956857: 361,340,000
+2025-10-09 08:39:44,808 - INFO - src.grafico_test 345 - Entrenando con semilla 2244824206 (9/5)
+2025-10-09 08:39:44,808 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:39:44,808 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:39:45,600 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:39:45,771 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:39:45,772 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:39:45,772 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:39:45,772 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:39:45,772 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:39:45,912 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:39:45,912 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:39:45,912 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:39:45,912 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:39:46,866 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 2244824206
+2025-10-09 08:42:58,682 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 2244824206: 360,520,000
+2025-10-09 08:42:58,682 - INFO - src.grafico_test 345 - Entrenando con semilla 2135071848 (10/5)
+2025-10-09 08:42:58,682 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:42:58,682 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:42:59,349 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:42:59,494 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:42:59,494 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:42:59,494 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:42:59,494 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:42:59,494 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:42:59,672 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:42:59,674 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:42:59,674 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:42:59,674 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:43:00,641 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 2135071848
+2025-10-09 08:46:03,917 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 2135071848: 353,380,000
+2025-10-09 08:46:03,917 - INFO - src.grafico_test 345 - Entrenando con semilla 1986314307 (11/5)
+2025-10-09 08:46:03,917 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:46:03,917 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:46:04,697 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:46:04,848 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:46:04,848 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:46:04,848 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:46:04,849 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:46:04,849 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:46:05,005 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:46:05,006 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:46:05,006 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:46:05,006 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:46:05,938 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 1986314307
+2025-10-09 08:49:09,545 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 1986314307: 364,280,000
+2025-10-09 08:49:09,545 - INFO - src.grafico_test 345 - Entrenando con semilla 700956269 (12/5)
+2025-10-09 08:49:09,545 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:49:09,547 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:49:10,328 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:49:10,467 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:49:10,467 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:49:10,467 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:49:10,467 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:49:10,467 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:49:10,614 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:49:10,614 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:49:10,615 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:49:10,615 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:49:11,518 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 700956269
+2025-10-09 08:52:17,464 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 700956269: 354,100,000
+2025-10-09 08:52:17,464 - INFO - src.grafico_test 345 - Entrenando con semilla 2634366409 (13/5)
+2025-10-09 08:52:17,464 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:52:17,464 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:52:18,160 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:52:18,331 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:52:18,331 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:52:18,331 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:52:18,331 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:52:18,331 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:52:18,495 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:52:18,495 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:52:18,495 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:52:18,495 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:52:19,441 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 2634366409
+2025-10-09 08:55:28,300 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 2634366409: 357,120,000
+2025-10-09 08:55:28,300 - INFO - src.grafico_test 345 - Entrenando con semilla 3124433799 (14/5)
+2025-10-09 08:55:28,300 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:55:28,303 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:55:29,039 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:55:29,189 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:55:29,189 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:55:29,189 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:55:29,189 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:55:29,189 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:55:29,355 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:55:29,355 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:55:29,355 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:55:29,355 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:55:30,292 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3124433799
+2025-10-09 08:58:32,504 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 3124433799: 362,680,000
+2025-10-09 08:58:32,505 - INFO - src.grafico_test 345 - Entrenando con semilla 3172237117 (15/5)
+2025-10-09 08:58:32,505 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 08:58:32,506 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 08:58:33,320 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:58:33,467 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:58:33,467 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:58:33,467 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 08:58:33,467 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 08:58:33,468 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 08:58:33,605 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 08:58:33,605 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 08:58:33,607 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 08:58:33,607 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 08:58:34,607 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3172237117
+2025-10-09 09:01:41,942 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 3172237117: 355,040,000
+2025-10-09 09:01:41,942 - INFO - src.grafico_test 345 - Entrenando con semilla 3304250087 (16/5)
+2025-10-09 09:01:41,942 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 09:01:41,942 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 09:01:42,654 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:01:42,808 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:01:42,808 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:01:42,808 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 09:01:42,808 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 09:01:42,808 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:01:42,958 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:01:42,958 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:01:42,958 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 09:01:42,958 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 09:01:43,887 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 3304250087
+2025-10-09 09:04:54,840 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 3304250087: 353,180,000
+2025-10-09 09:04:54,840 - INFO - src.grafico_test 345 - Entrenando con semilla 1830716173 (17/5)
+2025-10-09 09:04:54,840 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 09:04:54,840 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 09:04:55,551 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:04:55,709 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:04:55,709 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:04:55,709 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 09:04:55,709 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 09:04:55,709 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:04:55,854 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:04:55,854 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:04:55,854 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 09:04:55,854 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 09:04:56,793 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 1830716173
+2025-10-09 09:08:06,296 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 1830716173: 361,780,000
+2025-10-09 09:08:06,296 - INFO - src.grafico_test 345 - Entrenando con semilla 560950634 (18/5)
+2025-10-09 09:08:06,296 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 09:08:06,296 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 09:08:06,967 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:08:07,117 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:08:07,117 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:08:07,117 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 09:08:07,117 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 09:08:07,120 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:08:07,270 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:08:07,272 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:08:07,272 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 09:08:07,272 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 09:08:08,301 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 560950634
+2025-10-09 09:11:16,881 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 560950634: 357,060,000
+2025-10-09 09:11:16,881 - INFO - src.grafico_test 345 - Entrenando con semilla 2551157656 (19/5)
+2025-10-09 09:11:16,881 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 09:11:16,881 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 09:11:17,710 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:11:17,869 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:11:17,869 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:11:17,869 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 09:11:17,869 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 09:11:17,869 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:11:18,015 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:11:18,015 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:11:18,018 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 09:11:18,018 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 09:11:19,007 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 2551157656
+2025-10-09 09:14:37,924 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 2551157656: 359,940,000
+2025-10-09 09:14:37,924 - INFO - src.grafico_test 345 - Entrenando con semilla 1598675328 (20/5)
+2025-10-09 09:14:37,924 - INFO - src.test_evaluation 30 - === EVALUACIÓN EN CONJUNTO DE TEST ===
+2025-10-09 09:14:37,924 - INFO - src.test_evaluation 31 - Período de test: 202104
+2025-10-09 09:14:38,626 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:14:38,773 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:14:38,773 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:14:38,773 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 09:14:38,773 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 09:14:38,773 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 09:14:38,924 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 09:14:38,924 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 09:14:38,925 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 09:14:38,925 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 09:14:40,076 - INFO - src.test_evaluation 69 - Semilla de entrenamiento: 1598675328
+2025-10-09 09:17:52,177 - INFO - src.grafico_test 367 -   - Ganancia máxima con semilla 1598675328: 356,520,000
+2025-10-09 09:17:52,179 - INFO - src.grafico_test 186 - === CREANDO GRÁFICO COMPARATIVO MÚLTIPLES SEMILLAS ===
+2025-10-09 09:17:53,954 - INFO - src.grafico_test 297 - Estadísticas comparativas del gráfico:
+2025-10-09 09:17:53,954 - INFO - src.grafico_test 298 -   - Ganancia máxima global: 364,280,000
+2025-10-09 09:17:53,954 - INFO - src.grafico_test 299 -   - Ganancia máxima promedio: 358,074,000
+2025-10-09 09:17:53,954 - INFO - src.grafico_test 300 -   - Desviación estándar de ganancias: 3,108,286
+2025-10-09 09:17:53,954 - INFO - src.grafico_test 301 -   - Corte óptimo promedio: 9,937 clientes
+2025-10-09 09:17:53,954 - INFO - src.grafico_test 302 -   - Desviación estándar de cortes: 1,230 clientes
+2025-10-09 09:17:53,954 - INFO - src.grafico_test 303 -   - Umbral de filtrado: 240,424,800 (66% del máximo global)
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 304 -   - CURVA MEDIA: Ganancia máxima: 354,000,000 en 9,395 clientes
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 267575717: Max=354,800,000, Corte=11,819
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 2921956480: Max=359,400,000, Corte=10,349
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 3646296322: Max=357,700,000, Corte=9,314
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 3919119180: Max=360,580,000, Corte=9,210
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 2031626485: Max=358,020,000, Corte=10,418
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 3807823223: Max=358,280,000, Corte=8,525
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 1697411506: Max=355,760,000, Corte=10,371
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 4020956857: Max=361,340,000, Corte=9,332
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 2244824206: Max=360,520,000, Corte=10,533
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 2135071848: Max=353,380,000, Corte=9,410
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 1986314307: Max=364,280,000, Corte=8,425
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 700956269: Max=354,100,000, Corte=9,214
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 2634366409: Max=357,120,000, Corte=7,423
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 3124433799: Max=362,680,000, Corte=10,625
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 3172237117: Max=355,040,000, Corte=8,567
+2025-10-09 09:17:53,955 - INFO - src.grafico_test 307 -   - Semilla 3304250087: Max=353,180,000, Corte=10,380
+2025-10-09 09:17:53,956 - INFO - src.grafico_test 307 -   - Semilla 1830716173: Max=361,780,000, Corte=12,830
+2025-10-09 09:17:53,956 - INFO - src.grafico_test 307 -   - Semilla 560950634: Max=357,060,000, Corte=10,946
+2025-10-09 09:17:53,956 - INFO - src.grafico_test 307 -   - Semilla 2551157656: Max=359,940,000, Corte=10,042
+2025-10-09 09:17:53,956 - INFO - src.grafico_test 307 -   - Semilla 1598675328: Max=356,520,000, Corte=11,013
+2025-10-09 09:17:53,956 - INFO - src.grafico_test 309 - Gráfico comparativo guardado en: resultados/Con_100trials_cv_01_grafico_comparativo_semillas_20251009_091753.jpg
+2025-10-09 09:17:53,956 - INFO - src.grafico_test 372 - === GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS COMPLETADO ===
+2025-10-09 09:17:54,065 - INFO - __main__ 84 - ✅ Gráfico generado: resultados/Con_100trials_cv_01_grafico_comparativo_semillas_20251009_091753.jpg
+2025-10-09 09:17:54,069 - INFO - __main__ 87 - === ENTRENAMIENTO FINAL ===
+2025-10-09 09:17:54,069 - INFO - __main__ 106 - === RESUMEN FINAL ===
+2025-10-09 09:17:54,069 - INFO - __main__ 107 - ✅ Entrenamiento final completado exitosamente
+2025-10-09 09:17:54,069 - INFO - __main__ 108 - 📊 Mejores hiperparámetros utilizados: {'num_leaves': 278, 'learning_rate': 0.0371401380258487, 'feature_fraction': 0.5819071419859364, 'bagging_fraction': 0.8041169790281475, 'min_child_samples': 81, 'max_depth': 15, 'reg_alpha': 1.6687343874071772, 'reg_lambda': 1.6858080560719633, 'bin': 206, 'verbose': -1, 'seed': 811157}
+2025-10-09 09:17:54,069 - INFO - __main__ 112 - 📝 Log detallado: logs/log_Con_100trials_cv_01_2025-10-09_08_13_14.log
+2025-10-09 09:17:54,069 - INFO - __main__ 114 - >>> Ejecución finalizada. Revisar logs para mas detalles.

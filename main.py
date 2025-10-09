@@ -43,16 +43,17 @@ def main():
     df = cargar_datos(DATA_PATH)       
 
     #01 Feature Engineering
-    atributos = ["mcuentas_saldo", "mtarjeta_visa_consumo", "cproductos"]
+    atributos = [col for col in df.columns if col.startswith(('c', 'm'))]
     cant_lag = 2
     df_fe = feature_engineering_lag(df, atributos, cant_lag)
+    df_fe = feature_engineering_delta_lag(df, atributos, cant_lag)
     logger.info(f"Feature Engineering completado: {df_fe.shape}")
 
     #02 Convertir clase_ternaria a target binario
     #df_fe = convertir_clase_ternaria_a_target(df_fe)
     
     #03 Ejecutar optimizacion de hiperparametros
-    #study = optimizar_con_cv(df_fe, n_trials=100)
+    #study = optimizar_con_cv(df_fe, n_trials=50)
     
     #04 Análisis adicional
     #logger.info("=== ANÁLISIS DE RESULTADOS ===")
@@ -80,7 +81,7 @@ def main():
     logger.info(f"✅ Ganancia en test: {ganancia_test[0]:,.0f}")
     
     logger.info("=== GRAFICO DE TEST ===")
-    ruta_grafico = generar_grafico_test_completo(df_fe)
+    ruta_grafico = generar_grafico_test_completo(df_fe, tiradas=20)
     logger.info(f"✅ Gráfico generado: {ruta_grafico}")
     
     #06 Entrenar modelo final
@@ -106,9 +107,9 @@ def main():
     logger.info("=== RESUMEN FINAL ===")
     logger.info(f"✅ Entrenamiento final completado exitosamente")
     logger.info(f"📊 Mejores hiperparámetros utilizados: {mejores_params}")
-    logger.info(f"🎯 Períodos de entrenamiento: {FINAL_TRAIN}")
-    logger.info(f"🔮 Período de predicción: {FINAL_PREDIC}")
-    logger.info(f"📁 Archivo de salida: {archivo_salida}")
+    #logger.info(f"🎯 Períodos de entrenamiento: {FINAL_TRAIN}")
+    #logger.info(f"🔮 Período de predicción: {FINAL_PREDIC}")
+    #logger.info(f"📁 Archivo de salida: {archivo_salida}")
     logger.info(f"📝 Log detallado: logs/{nombre_log}")
 
     logger.info(f">>> Ejecución finalizada. Revisar logs para mas detalles.")
