@@ -65,16 +65,15 @@ def feature_engineering_delta_lag(df: pd.DataFrame, columnas: list[str], cant_la
     df : pd.DataFrame
         DataFrame con los datos originales.
     columnas : list[str]
-        Lista de atributos para los cuales generar delta-lags.
     cant_lag : int, default=1
         Cantidad de lags a considerar para cada delta.
 
     Returns
     -------
     pd.DataFrame
-        DataFrame con las columnas delta-lag agregadas.
+        DataFrame con las variables delta-lag agregadas.
     """
-
+    
     logger.info(f"Generando delta-lags con {cant_lag} desfases para {len(columnas) if columnas else 0} atributos")
 
     if columnas is None or len(columnas) == 0:
@@ -83,15 +82,30 @@ def feature_engineering_delta_lag(df: pd.DataFrame, columnas: list[str], cant_la
 
     sql = "SELECT *"
 
+    columnas_validas = []
     for attr in columnas:
-        if attr in df.columns:
-            for i in range(1, cant_lag + 1):
-                sql += (
-                    f", ({attr} - lag({attr}, {i}) OVER (PARTITION BY numero_de_cliente ORDER BY foto_mes)) "
-                    f"AS {attr}_delta_lag_{i}"
-                )
-        else:
+        if attr not in df.columns:
             logger.warning(f"El atributo {attr} no existe en el DataFrame")
+            continue
+
+        if not pd.api.types.is_numeric_dtype(df[attr]):
+            logger.warning(
+                f"El atributo {attr} no es numérico; se omite de la generación de delta-lags"
+            )
+            continue
+
+        columnas_validas.append(attr)
+
+    if len(columnas_validas) == 0:
+        logger.warning("No se encontraron atributos numéricos para generar delta-lags")
+        return df
+
+    for attr in columnas_validas:
+        for i in range(1, cant_lag + 1):
+            sql += (
+                f", ({attr} - lag({attr}, {i}) OVER (PARTITION BY numero_de_cliente ORDER BY foto_mes)) "
+                f"AS {attr}_delta_lag_{i}"
+            )
 
     sql += " FROM df"
 

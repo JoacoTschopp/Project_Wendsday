@@ -1,0 +1,8 @@
+﻿2025-10-10 12:12:15,986 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-10 12:12:15,986 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-10 12:12:21,314 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 102 atributos
+2025-10-10 12:12:29,640 - INFO - __name__ 54 - Feature engineering completado. DataFrame resultante con 359 columnas
+2025-10-10 12:12:29,640 - INFO - __name__ 77 - Generando delta-lags con 2 desfases para 102 atributos
+2025-10-10 12:12:38,236 - INFO - __name__ 119 - Delta-lags generados. DataFrame resultante con 359 columnas
+2025-10-10 12:12:38,418 - INFO - __main__ 51 - Feature Engineering completado: (978439, 359)
+2025-10-10 12:12:38,418 - INFO - __main__ 110 - === SIMULACIÓN DE KAGGLE ===

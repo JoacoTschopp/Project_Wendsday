@@ -1,4 +1,4 @@
-STUDY_NAME : "Con_50trials_cv(01-04)"
+STUDY_NAME : "Con_100trials_cv(us0.02)"
 
 competencia01:
     DATA_PATH: "./data/competencia.csv"
@@ -21,4 +21,6 @@ parametros_lgb:
     max_depth: [3, 15]
     reg_alpha: [0.0, 10.0]
     reg_lambda: [0.0, 10.0]
-    bin: [29, 255]
+    min_data_in_leaf: [1, 50]
+    num_iterations: [100, 1000]
+    bin: [31]

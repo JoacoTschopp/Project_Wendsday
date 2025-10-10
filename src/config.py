@@ -23,6 +23,8 @@ try:
         COSTO_ESTIMULO = _cfg.get("COSTO_ESTIMULO", None)
         FINAL_TRAIN = _cfg.get("FINAL_TRAIN", [])
         FINAL_PREDIC = _cfg.get("FINAL_PREDIC", "")
+        MIN_DATA_IN_LEAF = _cfg.get("MIN_DATA_IN_LEAF", None)
+        NUM_ITERATIONS = _cfg.get("NUM_ITERATIONS", None)
 
 except Exception as e:
     logger.error(f"Error al cargar el archivo de configuracion: {e}")

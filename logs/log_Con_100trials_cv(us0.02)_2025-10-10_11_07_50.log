@@ -1,0 +1,5 @@
+﻿2025-10-10 11:07:50,152 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-10 11:07:50,152 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-10 11:07:56,116 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 102 atributos
+2025-10-10 11:08:05,338 - INFO - __name__ 54 - Feature engineering completado. DataFrame resultante con 359 columnas
+2025-10-10 11:08:05,338 - INFO - __name__ 77 - Generando delta-lags con 2 desfases para 102 atributos

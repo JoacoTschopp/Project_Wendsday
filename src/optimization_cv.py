@@ -9,63 +9,116 @@ from datetime import datetime
 import json
 import os
 
-def _aplicar_undersampling(df: pd.DataFrame, ratio: float, trial_number: int) -> pd.DataFrame:
+from .config import *
+from .gain_function import ganancia_evaluator
+from .loader import convertir_clase_ternaria_a_target
+
+logger = logging.getLogger(__name__)
+
+
+def _obtener_rango_parametro(nombre: str) -> tuple:
+    valores = PARAMETROS_LGB.get(nombre)
+    if valores is None:
+        raise KeyError(f"No se encontró configuración para el parámetro '{nombre}'")
+
+    if isinstance(valores, (int, float)):
+        return valores, valores
+
+    if isinstance(valores, (list, tuple)):
+        if len(valores) == 0:
+            raise ValueError(f"La configuración de '{nombre}' está vacía")
+        if len(valores) == 1:
+            return valores[0], valores[0]
+        return valores[0], valores[1]
+
+    raise TypeError(f"Tipo de configuración no soportado para '{nombre}': {type(valores)}")
+
+
+def aplicar_undersampling(df: pd.DataFrame, ratio: float, random_state: int) -> pd.DataFrame:
+    """Aplica undersampling controlado sobre la clase mayoritaria."""
     if ratio <= 0:
         raise ValueError("El ratio de undersampling debe ser mayor que 0")
 
-    clase_mayoritaria = df[df['clase_ternaria'] == 0]
-    clase_minoritaria = df[df['clase_ternaria'] == 1]
+    valores_clase = df['clase_ternaria'].to_numpy(copy=False)
+    valores_clientes = df['numero_de_cliente'].to_numpy(copy=False)
 
-    if clase_mayoritaria.empty or clase_minoritaria.empty:
+    mask_mayoritaria = valores_clase == 0
+    mask_minoritaria = valores_clase == 1
+
+    if not mask_mayoritaria.any() or not mask_minoritaria.any():
         logger.warning("No se puede aplicar undersampling: una de las clases está vacía")
         return df
 
-    muestra_mayoritaria = int(len(clase_mayoritaria) * ratio)
-    muestra_mayoritaria = max(muestra_mayoritaria, len(clase_minoritaria))
-    muestra_mayoritaria = min(muestra_mayoritaria, len(clase_mayoritaria))
+    clientes_mayoritaria = np.unique(valores_clientes[mask_mayoritaria])
+    clientes_minoritaria = np.unique(valores_clientes[mask_minoritaria])
 
-    mayoritaria_sampleada = clase_mayoritaria.sample(
-        n=muestra_mayoritaria,
-        random_state=SEMILLA[0] + trial_number,
-        replace=False
-    )
+    muestra_clientes = int(len(clientes_mayoritaria) * ratio)
+    muestra_clientes = max(muestra_clientes, len(clientes_minoritaria))
+    muestra_clientes = min(muestra_clientes, len(clientes_mayoritaria))
 
-    df_sampleado = pd.concat([mayoritaria_sampleada, clase_minoritaria], axis=0)
-    df_sampleado = df_sampleado.sample(frac=1.0, random_state=SEMILLA[0] + trial_number).reset_index(drop=True)
+    rng = np.random.default_rng(random_state)
+    clientes_sampleados = rng.choice(clientes_mayoritaria, size=muestra_clientes, replace=False)
+
+    mascara_clientes_seleccionados = np.isin(valores_clientes, clientes_sampleados)
+    mask_mayoritaria_seleccionada = mask_mayoritaria & mascara_clientes_seleccionados
+    mask_final = mask_minoritaria | mask_mayoritaria_seleccionada
+
+    indices_finales = np.flatnonzero(mask_final)
+    df_sampleado = df.take(indices_finales).sample(frac=1.0, random_state=random_state).reset_index(drop=True)
+
+    clientes_retenidos = len(clientes_sampleados)
 
     logger.debug(
-        f"Trial {trial_number}: undersampling aplicado - clase 0: {len(mayoritaria_sampleada)}, clase 1: {len(clase_minoritaria)}"
+        "Undersampling aplicado - clientes clase 0: %d, clientes clase 1: %d",
+        clientes_retenidos,
+        len(clientes_minoritaria)
     )
 
     return df_sampleado
 
 
+def _aplicar_undersampling(df: pd.DataFrame, ratio: float, trial_number: int) -> pd.DataFrame:
+    base_seed = SEMILLA[0] if isinstance(SEMILLA, list) else SEMILLA
+    random_state = base_seed + trial_number
+    return aplicar_undersampling(df, ratio, random_state=random_state)
+
+
 def objetivo_ganancia_cv(trial, df, undersampling: float = 1.0) -> float:
-    """
-    Función objetivo con Cross Validation que maximiza ganancia promedio.
-    Utiliza lgb.cv() con estratificación interna y métrica personalizada.
+    """Evaluación de la ganancia promedio de Cross Validation.
   
     Args:
         trial: Trial de Optuna
-        df: DataFrame con datos de entrenamiento y validación
         semilla: Semilla para reproducibilidad
   
     Returns:
         float: Ganancia promedio de Cross Validation
     """
-    # Hiperparámetros a optimizar
+    num_leaves_min, num_leaves_max = _obtener_rango_parametro('num_leaves')
+    learning_rate_min, learning_rate_max = _obtener_rango_parametro('learning_rate')
+    feature_fraction_min, feature_fraction_max = _obtener_rango_parametro('feature_fraction')
+    bagging_fraction_min, bagging_fraction_max = _obtener_rango_parametro('bagging_fraction')
+    min_child_samples_min, min_child_samples_max = _obtener_rango_parametro('min_child_samples')
+    max_depth_min, max_depth_max = _obtener_rango_parametro('max_depth')
+    reg_alpha_min, reg_alpha_max = _obtener_rango_parametro('reg_alpha')
+    reg_lambda_min, reg_lambda_max = _obtener_rango_parametro('reg_lambda')
+    bin_min, bin_max = _obtener_rango_parametro('bin')
+    min_data_in_leaf_min, min_data_in_leaf_max = _obtener_rango_parametro('min_data_in_leaf')
+    num_iterations_min, num_iterations_max = _obtener_rango_parametro('num_iterations')
+
     params = {
         'objective': 'binary',
         'metric': 'None',  # Usamos nuestra métrica personalizada
-        'num_leaves': trial.suggest_int('num_leaves', PARAMETROS_LGB['num_leaves'][0], PARAMETROS_LGB['num_leaves'][1]),
-        'learning_rate': trial.suggest_float('learning_rate', PARAMETROS_LGB['learning_rate'][0], PARAMETROS_LGB['learning_rate'][1], log=True),
-        'feature_fraction': trial.suggest_float('feature_fraction', PARAMETROS_LGB['feature_fraction'][0], PARAMETROS_LGB['feature_fraction'][1]),
-        'bagging_fraction': trial.suggest_float('bagging_fraction', PARAMETROS_LGB['bagging_fraction'][0], PARAMETROS_LGB['bagging_fraction'][1]),
-        'min_child_samples': trial.suggest_int('min_child_samples', PARAMETROS_LGB['min_child_samples'][0], PARAMETROS_LGB['min_child_samples'][1]),
-        'max_depth': trial.suggest_int('max_depth', PARAMETROS_LGB['max_depth'][0], PARAMETROS_LGB['max_depth'][1]),
-        'reg_alpha': trial.suggest_float('reg_alpha', PARAMETROS_LGB['reg_alpha'][0], PARAMETROS_LGB['reg_alpha'][1]),
-        'reg_lambda': trial.suggest_float('reg_lambda', PARAMETROS_LGB['reg_lambda'][0], PARAMETROS_LGB['reg_lambda'][1]),
-        'bin': trial.suggest_int('bin', PARAMETROS_LGB['bin'][0], PARAMETROS_LGB['bin'][1]),
+        'num_leaves': trial.suggest_int('num_leaves', num_leaves_min, num_leaves_max),
+        'learning_rate': trial.suggest_float('learning_rate', learning_rate_min, learning_rate_max, log=True),
+        'feature_fraction': trial.suggest_float('feature_fraction', feature_fraction_min, feature_fraction_max),
+        'bagging_fraction': trial.suggest_float('bagging_fraction', bagging_fraction_min, bagging_fraction_max),
+        'min_child_samples': trial.suggest_int('min_child_samples', min_child_samples_min, min_child_samples_max),
+        'max_depth': trial.suggest_int('max_depth', max_depth_min, max_depth_max),
+        'reg_alpha': trial.suggest_float('reg_alpha', reg_alpha_min, reg_alpha_max),
+        'reg_lambda': trial.suggest_float('reg_lambda', reg_lambda_min, reg_lambda_max),
+        'bin': trial.suggest_int('bin', bin_min, bin_max),
+        'min_data_in_leaf': trial.suggest_int('min_data_in_leaf', min_data_in_leaf_min, min_data_in_leaf_max),
+        'num_iterations': trial.suggest_int('num_iterations', num_iterations_min, num_iterations_max),
         'random_state': SEMILLA[0],  # Desde configuración YAML
         'verbosity': -1
     }

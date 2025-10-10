@@ -1,0 +1,20 @@
+﻿2025-10-09 18:34:54,694 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-09 18:34:54,694 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-09 18:35:00,124 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 102 atributos
+2025-10-09 18:35:08,946 - INFO - __name__ 54 - Feature engineering completado. DataFrame resultante con 359 columnas
+2025-10-09 18:35:08,946 - INFO - __name__ 77 - Generando delta-lags con 2 desfases para 102 atributos
+2025-10-09 18:35:17,607 - INFO - __name__ 119 - Delta-lags generados. DataFrame resultante con 359 columnas
+2025-10-09 18:35:17,727 - INFO - __main__ 51 - Feature Engineering completado: (978439, 359)
+2025-10-09 18:35:17,727 - INFO - src.optimization_cv 226 - Iniciando optimización con CV - 50 trials
+2025-10-09 18:35:17,727 - INFO - src.optimization_cv 227 - Configuración CV: períodos=[202101, 202102, 202103, 202104]
+2025-10-09 18:35:19,076 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 18:35:19,169 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 18:35:19,169 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 18:35:19,171 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 18:35:19,171 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos
+2025-10-09 18:35:35,585 - INFO - src.optimization_cv 211 - Iteración CV 0 guardada - Ganancia: 1,029,360,000
+2025-10-09 18:35:36,912 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 18:35:37,015 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 18:35:37,016 - INFO - src.loader 53 -   Original - CONTINUA: 642824, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 18:35:37,016 - INFO - src.loader 54 -   Binario - 0: 642824, 1: 7385
+2025-10-09 18:35:37,016 - INFO - src.loader 55 -   Distribución: 1.14% casos positivos

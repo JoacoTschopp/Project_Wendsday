@@ -360,7 +360,7 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
     return ruta_archivo
 
 
-def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int) -> str:
+def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int, undersampling: float = 1.0) -> str:
     """
     Función principal que genera el gráfico de test con 5 entrenamientos diferentes usando todas las semillas.
     
@@ -393,7 +393,12 @@ def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int) -> str:
         logger.info(f"Entrenando con semilla {semilla} ({i+1}/5)")
         
         # Obtener predicciones para esta semilla
-        ganancia_test, y_pred_proba = evaluar_en_test(df, mejores_params, semilla=semilla)
+        ganancia_test, y_pred_proba = evaluar_en_test(
+            df,
+            mejores_params,
+            undersampling=undersampling,
+            semilla=semilla
+        )
         
         # Calcular ganancia acumulada
         ganancias_acumuladas = calcular_ganancia_acumulada(y_true, y_pred_proba)

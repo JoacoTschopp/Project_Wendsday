@@ -6,6 +6,7 @@ import polars as pl
 from .config import *
 from .gain_function import calcular_ganancia, ganancia_evaluator
 from .loader import convertir_clase_ternaria_a_target
+from .optimization_cv import aplicar_undersampling
 from datetime import datetime
 import os
 import json
@@ -13,21 +14,25 @@ import json
 logger = logging.getLogger(__name__)
 
 
-def evaluar_en_test(df: pd.DataFrame, mejores_params: dict, semilla: int = SEMILLA[0]) -> (float, np.ndarray):
+def evaluar_en_test(
+    df: pd.DataFrame,
+    mejores_params: dict,
+    undersampling: float = 1.0,
+    semilla: int = SEMILLA[0]
+) -> (float, np.ndarray):
     """
-        Evalúa el modelo con los mejores hiperparámetros en el conjunto de test.
         Solo calcula la ganancia.
     
     Args:
         df: DataFrame con todos los datos
         mejores_params: Mejores hiperparámetros encontrados por Optuna
-    
+        undersampling: Ratio para reducir la clase mayoritaria (1.0 desactiva)
+        
     Returns:
         dict: Ganancia total
         np.ndarray: Probabilidades predichas
     """
-    
-    logger.info("=== EVALUACIÓN EN CONJUNTO DE TEST ===")
+
     logger.info(f"Período de test: {MES_TEST}")
     
     # Preparar datos de entrenamiento (TRAIN + VALIDACION)
@@ -47,6 +52,10 @@ def evaluar_en_test(df: pd.DataFrame, mejores_params: dict, semilla: int = SEMIL
     # Filtrar por períodos antes de extraer features para optimizar memoria
     df_train_completo = df_train_completo[df_train_completo['foto_mes'].isin(periodos_entrenamiento)]
     df_test = df_test[df_test['foto_mes'] == MES_TEST]
+
+    if undersampling < 1.0:
+        logger.info(f"Aplicando undersampling (ratio={undersampling}) en entrenamiento")
+        df_train_completo = aplicar_undersampling(df_train_completo, undersampling, random_state=semilla)
     
     # Extraer target antes de eliminar la columna para evitar problemas de memoria
     y_train = df_train_completo['clase_ternaria'].values.astype(np.int32)
@@ -64,14 +73,17 @@ def evaluar_en_test(df: pd.DataFrame, mejores_params: dict, semilla: int = SEMIL
     # Entrenar modelo con función de ganancia personalizada
     train_data = lgb.Dataset(X_train, label=y_train)
 
-    mejores_params['verbose'] = -1 
-    mejores_params['seed'] = semilla
+    params_entrenamiento = dict(mejores_params)
+    params_entrenamiento['verbose'] = -1
+    params_entrenamiento['seed'] = semilla
+    num_boost_round = params_entrenamiento.pop('num_iterations', params_entrenamiento.pop('num_boost_round', 300))
+
     logger.info(f"Semilla de entrenamiento: {semilla}")
     # Entrenar modelo con mejores parámetros
     model = lgb.train(
-        mejores_params,
+        params_entrenamiento,
         train_data,
-        num_boost_round=300,
+        num_boost_round=num_boost_round,
         feval=ganancia_evaluator,  # Función de ganancia personalizada
         callbacks=[lgb.log_evaluation(0)]
     )

@@ -5,6 +5,7 @@ import logging
 import os
 from datetime import datetime
 from .config import FINAL_TRAIN, FINAL_PREDIC, SEMILLA
+from .optimization_cv import aplicar_undersampling
 from .best_params import cargar_mejores_hiperparametros
 from .gain_function import ganancia_lgb_binary, ganancia_evaluator
 from .loader import convertir_clase_ternaria_a_target
@@ -48,7 +49,12 @@ def preparar_datos_entrenamiento_final(df: pd.DataFrame) -> tuple:
     
     return X_train, y_train, X_predic, clientes_predic
 
-def entrenar_modelo_final(df: pd.DataFrame, mejores_params: dict) -> lgb.Booster:
+def entrenar_modelo_final(
+    df: pd.DataFrame,
+    mejores_params: dict,
+    undersampling: float = 1.0,
+    semilla: int = SEMILLA[0]
+) -> lgb.Booster:
     """
     Entrena el modelo final con los mejores hiperparámetros.
     
@@ -66,6 +72,10 @@ def entrenar_modelo_final(df: pd.DataFrame, mejores_params: dict) -> lgb.Booster
     df_train_final = df[df['foto_mes'].isin(FINAL_TRAIN)]
     df_train_final = convertir_clase_ternaria_a_target(df_train_final, baja_2_1=True)
 
+    if undersampling < 1.0:
+        logger.info(f"Aplicando undersampling (ratio={undersampling}) en entrenamiento final")
+        df_train_final = aplicar_undersampling(df_train_final, undersampling, random_state=semilla)
+
     # Usar target (clase_ternaria ya convertida a binaria)
     y_train = df_train_final['clase_ternaria'].values
         
@@ -76,10 +86,12 @@ def entrenar_modelo_final(df: pd.DataFrame, mejores_params: dict) -> lgb.Booster
     params = {
         'objective': 'binary',
         'metric': 'None',  # Usamos nuestra métrica personalizada
-        'random_state': SEMILLA[0],
+        'random_state': semilla,
         'verbose': -1,
         **mejores_params  # Agregar los mejores hiperparámetros
     }
+
+    num_boost_round = params.pop('num_iterations', params.pop('num_boost_round', 300))
     
     # Crear dataset de LightGBM
     train_data = lgb.Dataset(X_train, label=y_train)
@@ -89,7 +101,7 @@ def entrenar_modelo_final(df: pd.DataFrame, mejores_params: dict) -> lgb.Booster
     modelo = lgb.train(
         params,
         train_data,
-        num_boost_round=mejores_params.get('num_boost_round', 300),
+        num_boost_round=num_boost_round,
         callbacks=[
             lgb.log_evaluation(period=100)
         ],

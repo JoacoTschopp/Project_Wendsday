@@ -1,0 +1,10 @@
+﻿2025-10-09 18:30:09,488 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-09 18:30:09,488 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-09 18:30:14,826 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 103 atributos
+2025-10-09 18:30:23,381 - INFO - __name__ 54 - Feature engineering completado. DataFrame resultante con 361 columnas
+2025-10-09 18:30:23,381 - INFO - __name__ 77 - Generando delta-lags con 2 desfases para 103 atributos
+2025-10-09 18:30:23,384 - WARNING - __name__ 92 - El atributo clase_ternaria no es numérico; se omite de la generación de delta-lags
+2025-10-09 18:30:32,187 - INFO - __name__ 119 - Delta-lags generados. DataFrame resultante con 359 columnas
+2025-10-09 18:30:32,324 - INFO - __main__ 50 - Feature Engineering completado: (978439, 359)
+2025-10-09 18:30:32,324 - INFO - src.optimization_cv 196 - Iniciando optimización con CV - 50 trials
+2025-10-09 18:30:32,325 - INFO - src.optimization_cv 197 - Configuración CV: períodos=[202101, 202102, 202103, 202104]

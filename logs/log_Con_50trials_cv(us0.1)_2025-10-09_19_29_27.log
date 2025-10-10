@@ -1,0 +1,51 @@
+﻿2025-10-09 19:29:27,864 - INFO - __main__ 39 - Inicio de ejecucion.
+2025-10-09 19:29:27,864 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-09 19:29:33,398 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 102 atributos
+2025-10-09 19:29:42,155 - INFO - __name__ 54 - Feature engineering completado. DataFrame resultante con 359 columnas
+2025-10-09 19:29:42,155 - INFO - __name__ 77 - Generando delta-lags con 2 desfases para 102 atributos
+2025-10-09 19:29:50,892 - INFO - __name__ 119 - Delta-lags generados. DataFrame resultante con 359 columnas
+2025-10-09 19:29:51,077 - INFO - __main__ 51 - Feature Engineering completado: (978439, 359)
+2025-10-09 19:29:51,077 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_50trials_cv(us0.1)_iteraciones.json
+2025-10-09 19:29:51,077 - INFO - src.best_params 35 - Mejor ganancia encontrada: 1,041,080,000
+2025-10-09 19:29:51,080 - INFO - src.best_params 36 - Trial número: 45
+2025-10-09 19:29:51,080 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 207, 'learning_rate': 0.0347344652162764, 'feature_fraction': 0.49155336499144986, 'bagging_fraction': 0.5543697079348857, 'min_child_samples': 86, 'max_depth': 14, 'reg_alpha': 0.007675731108071432, 'reg_lambda': 2.5345743260625984, 'bin': 31, 'min_data_in_leaf': 3, 'num_iterations': 855}
+2025-10-09 19:29:51,080 - INFO - src.test_evaluation 36 - Período de test: 202104
+2025-10-09 19:29:52,568 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 19:29:52,701 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 19:29:52,701 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 19:29:52,701 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 19:29:52,701 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 19:29:52,701 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 19:29:52,826 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 19:29:52,827 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 19:29:52,827 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 19:29:52,827 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 19:29:53,645 - INFO - src.test_evaluation 57 - Aplicando undersampling (ratio=0.1) en entrenamiento
+2025-10-09 19:29:54,977 - INFO - src.test_evaluation 81 - Semilla de entrenamiento: 811157
+2025-10-09 19:30:10,851 - INFO - src.test_evaluation 168 - Resultados guardados en resultados/Con_50trials_cv(us0.1)_test_results_20251009_193010.json
+2025-10-09 19:30:10,851 - INFO - __main__ 84 - === RESUMEN DE EVALUACIÓN EN TEST ===
+2025-10-09 19:30:10,852 - INFO - __main__ 85 - ✅ Ganancia en test: 2,147,467,296
+2025-10-09 19:30:10,852 - INFO - __main__ 87 - === GRAFICO DE TEST ===
+2025-10-09 19:30:10,852 - INFO - src.grafico_test 373 - === INICIANDO GENERACIÓN DE GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS ===
+2025-10-09 19:30:10,852 - INFO - src.best_params 34 - Mejores hiperparámetros cargados desde resultados/Con_50trials_cv(us0.1)_iteraciones.json
+2025-10-09 19:30:10,852 - INFO - src.best_params 35 - Mejor ganancia encontrada: 1,041,080,000
+2025-10-09 19:30:10,852 - INFO - src.best_params 36 - Trial número: 45
+2025-10-09 19:30:10,852 - INFO - src.best_params 37 - Parámetros: {'num_leaves': 207, 'learning_rate': 0.0347344652162764, 'feature_fraction': 0.49155336499144986, 'bagging_fraction': 0.5543697079348857, 'min_child_samples': 86, 'max_depth': 14, 'reg_alpha': 0.007675731108071432, 'reg_lambda': 2.5345743260625984, 'bin': 31, 'min_data_in_leaf': 3, 'num_iterations': 855}
+2025-10-09 19:30:11,652 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 19:30:11,796 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 19:30:11,796 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 19:30:11,796 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 19:30:11,796 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 19:30:12,112 - INFO - src.grafico_test 393 - Entrenando con semilla 156071 (1/5)
+2025-10-09 19:30:12,112 - INFO - src.test_evaluation 36 - Período de test: 202104
+2025-10-09 19:30:13,552 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 19:30:13,694 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 19:30:13,694 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 19:30:13,694 - INFO - src.loader 54 -   Binario - 0: 971054, 1: 7385
+2025-10-09 19:30:13,694 - INFO - src.loader 55 -   Distribución: 0.75% casos positivos
+2025-10-09 19:30:13,696 - INFO - src.loader 33 - Convirtiendo clase_ternaria a target binario
+2025-10-09 19:30:13,831 - INFO - src.loader 52 - Conversión completada:
+2025-10-09 19:30:13,831 - INFO - src.loader 53 -   Original - CONTINUA: 971054, BAJA+1: 3447, BAJA+2: 3938
+2025-10-09 19:30:13,831 - INFO - src.loader 54 -   Binario - 0: 974501, 1: 3938
+2025-10-09 19:30:13,832 - INFO - src.loader 55 -   Distribución: 0.40% casos positivos
+2025-10-09 19:30:14,656 - INFO - src.test_evaluation 57 - Aplicando undersampling (ratio=0.1) en entrenamiento
