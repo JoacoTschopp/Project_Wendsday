@@ -1,4 +1,4 @@
-STUDY_NAME : "Con_100trials_cv(us0.02)"
+STUDY_NAME : "Con_50trials_cv(us0.1)"
 
 competencia01:
     DATA_PATH: "./data/competencia.csv"

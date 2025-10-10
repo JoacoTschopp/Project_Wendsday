@@ -1,0 +1,11 @@
+﻿2025-10-10 16:01:04,801 - INFO - __main__ 40 - Inicio de ejecucion.
+2025-10-10 16:01:04,801 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
+2025-10-10 16:01:10,100 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 102 atributos
+2025-10-10 16:01:18,785 - INFO - __name__ 54 - Feature engineering completado. DataFrame resultante con 359 columnas
+2025-10-10 16:01:18,785 - INFO - __name__ 77 - Generando delta-lags con 2 desfases para 102 atributos
+2025-10-10 16:01:27,567 - INFO - __name__ 119 - Delta-lags generados. DataFrame resultante con 359 columnas
+2025-10-10 16:01:27,688 - INFO - __main__ 52 - Feature Engineering completado: (978439, 359)
+2025-10-10 16:01:27,688 - INFO - __main__ 111 - === SIMULACIÓN DE KAGGLE ===
+2025-10-10 16:01:28,166 - INFO - src.polars_split_simulation 364 - Gráfico de distribución public guardado en resultados\Con_100trials_cv(us0.02)_ganancias_public_20251010_160127.png
+2025-10-10 16:01:28,371 - INFO - src.polars_split_simulation 364 - Gráfico de distribución private guardado en resultados\Con_100trials_cv(us0.02)_ganancias_private_20251010_160127.png
+2025-10-10 16:01:28,377 - INFO - __main__ 122 - 📝 Log detallado: logs/log_Con_100trials_cv(us0.02)_2025-10-10_16_01_04.log

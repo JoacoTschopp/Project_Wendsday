@@ -8,6 +8,7 @@ import lightgbm as lgb
 import matplotlib.pyplot as plt
 import numpy as np
 import polars as pl
+from matplotlib.backends.backend_pdf import PdfPages
 from sklearn.model_selection import StratifiedShuffleSplit
 
 from .best_params import cargar_mejores_hiperparametros
@@ -364,3 +365,91 @@ def plot_public_private_distributions(
         logger.info("Gráfico de distribución %s guardado en %s", subset, ruta)
 
     return rutas
+
+
+def plot_iteration_trends_pdf(
+    json_path: str,
+    output_path: Optional[str] = None,
+    public_color: str = "#1f77b4",
+    private_color: str = "#ff7f0e",
+) -> str:
+    if not os.path.exists(json_path):
+        raise FileNotFoundError(f"No se encontró el archivo {json_path}")
+
+    with open(json_path, "r", encoding="utf-8") as f:
+        datos = json.load(f)
+
+    iteraciones = datos.get("iteraciones", [])
+    if not iteraciones:
+        raise ValueError("El archivo JSON no contiene iteraciones para graficar")
+
+    cortes = datos.get("metadata", {}).get("cortes")
+    if not cortes:
+        raise ValueError("No se encontraron cortes en la metadata del JSON")
+
+    if output_path is None:
+        study = datos.get("metadata", {}).get("study_name", STUDY_NAME)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        output_dir = os.path.dirname(json_path) or "."
+        output_path = os.path.join(output_dir, f"{study}_iteraciones_trends_{timestamp}.pdf")
+
+    with PdfPages(output_path) as pdf:
+        for iteracion in iteraciones:
+            iter_idx = iteracion.get("iteracion")
+            particiones = iteracion.get("particiones", [])
+
+            if not particiones:
+                logger.warning("Iteración %s sin particiones, se omite el gráfico", iter_idx)
+                continue
+
+            registros_public: Dict[int, List[float]] = {corte: [] for corte in cortes}
+            registros_private: Dict[int, List[float]] = {corte: [] for corte in cortes}
+
+            for particion in particiones:
+                resultados = particion.get("resultados", {})
+                for corte in cortes:
+                    clave_public = f"{corte}_30"
+                    clave_private = f"{corte}_70"
+                    if clave_public in resultados:
+                        registros_public[corte].append(resultados[clave_public])
+                    if clave_private in resultados:
+                        registros_private[corte].append(resultados[clave_private])
+
+            cortes_validos_public = [c for c in cortes if registros_public[c]]
+            cortes_validos_private = [c for c in cortes if registros_private[c]]
+
+            if not cortes_validos_public and not cortes_validos_private:
+                logger.warning(
+                    "Iteración %s sin datos válidos para graficar tendencias", iter_idx
+                )
+                continue
+
+            fig, (ax_public, ax_private) = plt.subplots(1, 2, figsize=(16, 6), sharey=False)
+
+            if cortes_validos_public:
+                valores_public = [np.mean(registros_public[corte]) for corte in cortes_validos_public]
+                ax_public.plot(cortes_validos_public, valores_public, marker="o", color=public_color)
+                ax_public.set_title(f"Iteración {iter_idx} - Publico 30%")
+                ax_public.set_xlabel("Corte")
+                ax_public.set_ylabel("Ganancia promedio")
+                ax_public.grid(True, alpha=0.3)
+            else:
+                ax_public.set_visible(False)
+
+            if cortes_validos_private:
+                valores_private = [np.mean(registros_private[corte]) for corte in cortes_validos_private]
+                ax_private.plot(cortes_validos_private, valores_private, marker="o", color=private_color)
+                ax_private.set_title(f"Iteración {iter_idx} - Privado 70%")
+                ax_private.set_xlabel("Corte")
+                ax_private.set_ylabel("Ganancia promedio")
+                ax_private.grid(True, alpha=0.3)
+            else:
+                ax_private.set_visible(False)
+
+            fig.suptitle(f"Tendencias de ganancia por corte - Iteración {iter_idx}")
+            plt.tight_layout()
+            pdf.savefig(fig)
+            plt.close(fig)
+
+    logger.info("PDF de tendencias por iteración generado en %s", output_path)
+    return output_path

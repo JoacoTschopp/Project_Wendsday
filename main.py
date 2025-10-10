@@ -13,7 +13,7 @@ from src.final_training import preparar_datos_entrenamiento_final, generar_predi
 from src.output_manager import guardar_predicciones_finales
 from src.config import *
 from src.grafico_test import generar_grafico_test_completo
-from src.polars_split_simulation import run_polars_split_simulation
+from src.polars_split_simulation import run_polars_split_simulation, plot_public_private_distributions, plot_iteration_trends_pdf
 
 ## config basico logging
 os.makedirs("logs", exist_ok=True)
@@ -40,19 +40,16 @@ def main():
     logger.info("Inicio de ejecucion.")
 
     #00 Cargar datos
-    os.makedirs("data", exist_ok=True)
-    df = cargar_datos(DATA_PATH)       
+    #os.makedirs("data", exist_ok=True)
+    #df = cargar_datos(DATA_PATH)       
 
     #01 Feature Engineering
-    atributos = [col for col in df.columns if col.startswith(('c', 'm'))]
-    atributos.remove("clase_ternaria")
-    cant_lag = 2
-    df_fe = feature_engineering_lag(df, atributos, cant_lag)
-    df_fe = feature_engineering_delta_lag(df, atributos, cant_lag)
-    logger.info(f"Feature Engineering completado: {df_fe.shape}")
-
-    #02 Convertir clase_ternaria a target binario
-    #df_fe = convertir_clase_ternaria_a_target(df_fe)
+    #atributos = [col for col in df.columns if col.startswith(('c', 'm'))]
+    #atributos.remove("clase_ternaria")
+    #cant_lag = 2
+    #df_fe = feature_engineering_lag(df, atributos, cant_lag)
+    #df_fe = feature_engineering_delta_lag(df, atributos, cant_lag)
+    #logger.info(f"Feature Engineering completado: {df_fe.shape}")
     
     #03 Ejecutar optimizacion de hiperparametros
     #study = optimizar_con_cv(df_fe, n_trials=100, undersampling=0.02)
@@ -109,8 +106,11 @@ def main():
   
     #07 Simulación de entrenamiento
     logger.info("=== SIMULACIÓN DE KAGGLE ===")
-    run_polars_split_simulation(df_fe, n_iteraciones=50, n_tiradas=100, base_seed=SEMILLA[0], undersampling=0.02)
-   
+    #json_path = run_polars_split_simulation(df_fe, n_iteraciones=50, n_tiradas=100, cut_start=7000, cut_end=15000, base_seed=SEMILLA[0], undersampling=0.02)
+    json_path = "resultados/Con_50trials_cv(us0.1)_polars_split_20251010_160747.json"
+    #plot_public_private_distributions(json_path)
+    plot_iteration_trends_pdf(json_path)
+
     # Resumen final
     #logger.info("=== RESUMEN FINAL ===")
     #logger.info(f"✅ Entrenamiento final completado exitosamente")
@@ -119,7 +119,7 @@ def main():
     #logger.info(f"🔮 Período de predicción: {FINAL_PREDIC}")
     #logger.info(f"📁 Archivo de salida: {archivo_salida}")
     logger.info(f"📝 Log detallado: logs/{nombre_log}")
-
+    logger.info(f"📝 Resultados guardados en: {json_path}")
     logger.info(f">>> Ejecución finalizada. Revisar logs para mas detalles.")
 
 if __name__ == "__main__":
