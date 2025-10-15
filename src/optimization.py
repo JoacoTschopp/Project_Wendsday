@@ -8,10 +8,11 @@ import os
 from datetime import datetime
 from .config import *
 from .gain_function import calcular_ganancia, ganancia_lgb_binary, ganancia_evaluator
+from .loader import convertir_clase_ternaria_a_target
 
 logger = logging.getLogger(__name__)
 
-def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame) -> float:
+def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame, undersampling: float = 1) -> float:
     """
     Parameters:
     trial: trial de optuna
@@ -60,6 +61,14 @@ def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame) -> float:
     
     df_val = df[df['foto_mes'] == MES_VALIDACION]
     
+    #Convierto a binaria la clase ternaria, 
+    # para entrenar el modelo Baja+1 y Baja+2 == 1
+    # y calcular la ganancia de validacion Baja+2 solamente en 1
+    df_train = convertir_clase_ternaria_a_target(df_train, baja_2_1=True)
+    df_val = convertir_clase_ternaria_a_target(df_val, baja_2_1=False)
+    df_train['clase_ternaria'] = df_train['clase_ternaria'].astype(np.int8)
+    df_val['clase_ternaria'] = df_val['clase_ternaria'].astype(np.int8)
+
     # Usar target (clase_ternaria ya convertida a binaria)
     y_train = df_train['clase_ternaria'].values
     y_val = df_val['clase_ternaria'].values
@@ -72,19 +81,21 @@ def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame) -> float:
     train_data = lgb.Dataset(X_train, label=y_train)
     val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
     
+    #####
+    #ESTO ES OPTIMO, ENTRENAR UN SOLO MODELO!
+    #####
     model = lgb.train(
         params,
         train_data,
         valid_sets=[val_data],
-        feval=ganancia_lgb_binary,  # Función de ganancia personalizada
+        feval=ganancia_evaluator,  # Función de ganancia personalizada
         callbacks=[lgb.early_stopping(50), lgb.log_evaluation(0)]
     )
     
     # Predecir y calcular ganancia
     y_pred_proba = model.predict(X_val)
-    y_pred_binary = (y_pred_proba > 0.025).astype(int)  # Usar mismo umbral que en ganancia_lgb_binary
     
-    ganancia_total = calcular_ganancia(y_val, y_pred_binary)
+    _, ganancia_total, _ = ganancia_evaluator(y_pred_proba, val_data)
 
     # Guardar cada iteración en JSON
     guardar_iteracion(trial, ganancia_total)
@@ -143,15 +154,77 @@ def guardar_iteracion(trial, ganancia, archivo_base=None):
         json.dump(datos_existentes, f, indent=2)
   
     logger.info(f"Iteración {trial.number} guardada en {archivo}")
-    logger.info(f"Ganancia: {ganancia:,.0f}" + "---" + "Parámetros: {params}")
+    logger.info(f"Ganancia: {ganancia:,.0f} --- Parámetros: {trial.params}")
 
+def crear_o_cargar_estudio(study_name: str = None, semilla: int = None) -> optuna.Study:
+    """
+    Crea un nuevo estudio de Optuna o carga uno existente desde SQLite.
+    
+    Args:
+        study_name: Nombre del estudio (si es None, usa STUDY_NAME del config)
+        semilla: Semilla para reproducibilidad
+    
+    Returns:
+        optuna.Study: Estudio de Optuna (nuevo o cargado)
+    """
+    study_name = STUDY_NAME
+    
+    if semilla is None:
+        semilla = SEMILLA[0] if isinstance(SEMILLA, list) else SEMILLA
+    
+    # Crear carpeta para bases de datos si no existe
+    path_db = os.path.join(BUCKET_NAME, "optuna_db")
+    os.makedirs(path_db, exist_ok=True)
+    
+    # Ruta completa de la base de datos
+    db_file = os.path.join(path_db, f"{study_name}.db")
+    storage = f"sqlite:///{db_file}"
+    
+    # Verificar si existe un estudio previo
+    if os.path.exists(db_file):
+        logger.info(f"⚡ Base de datos encontrada: {db_file}")
+        logger.info(f"🔄 Cargando estudio existente: {study_name}")
+        
+        try:
+            study = optuna.load_study(study_name=study_name, storage=storage)
+            n_trials_previos = len(study.trials)
+            
+            logger.info(f"✅ Estudio cargado exitosamente")
+            logger.info(f"📊 Trials previos: {n_trials_previos}")
+            
+            if n_trials_previos > 0:
+                logger.info(f"🏆 Mejor ganancia hasta ahora: {study.best_value:,.0f}")
+            
+            return study
+            
+        except Exception as e:
+            logger.warning(f"⚠️ No se pudo cargar el estudio: {e}")
+            logger.info(f"🆕 Creando nuevo estudio...")
+    else:
+        logger.info(f"🆕 No se encontró base de datos previa")
+        logger.info(f"📁 Creando nueva base de datos: {db_file}")
+    
+    # Crear nuevo estudio
+    study = optuna.create_study(
+        study_name=study_name,
+        storage=storage,
+        direction='maximize',
+        sampler=optuna.samplers.TPESampler(seed=semilla),
+        load_if_exists=True
+    )
+    
+    logger.info(f"✅ Nuevo estudio creado: {study_name}")
+    logger.info(f"💾 Storage: {storage}")
+    
+    return study
 
-def optimizar(df: pd.DataFrame, n_trial: int, study_name: str = None) -> optuna.Study:
+def optimizar(df: pd.DataFrame, n_trials: int, study_name: str = None, undersampling: float = 0.01) -> optuna.Study:
     """
     Args:
         df: DataFrame con datos
-        n_trial: Número de trials a ejecutar
+        n_trials: Número de trials a ejecutar
         study_name: Nombre del estudio (si es None, usa el de config.yaml)
+        undersampling: Undersampling para entrenamiento
     
     Description:
        Ejecuta optimización bayesiana de hiperparámetros usando configuración YAML.
@@ -167,25 +240,31 @@ def optimizar(df: pd.DataFrame, n_trial: int, study_name: str = None) -> optuna.
 
     study_name = STUDY_NAME
 
-    logger.info(f"Iniciando optimización con {n_trial} trials")
+    logger.info(f"Iniciando optimización con {n_trials} trials")
     logger.info(f"Configuración: TRAIN={MES_TRAIN}, VALID={MES_VALIDACION}, SEMILLA={SEMILLA}")
-  
-        # Crear estudio de Optuna
-    study = optuna.create_study(
-        direction='maximize',  # Maximizar ganancia
-        study_name=study_name
-    )
     
-    # Función objetivo parcial con datos
-    objective_with_data = lambda trial: objetivo_ganancia(trial, df)
+    # Crear o cargar estudio desde DuckDB
+    study = crear_o_cargar_estudio(study_name, SEMILLA)
+
+    # Calcular cuántos trials faltan
+    trials_previos = len(study.trials)
+    trials_a_ejecutar = max(0, n_trials - trials_previos)
+    
+    if trials_previos > 0:
+        logger.info(f"🔄 Retomando desde trial {trials_previos}")
+        logger.info(f"📝 Trials a ejecutar: {trials_a_ejecutar} (total objetivo: {n_trials})")
+    else:
+        logger.info(f"🆕 Nueva optimización: {n_trials} trials")
     
     # Ejecutar optimización
-    study.optimize(objective_with_data, n_trials=n_trial, show_progress_bar=True)
-  
-    # Resultados
-    logger.info(f"Mejor ganancia: {study.best_value:,.0f}")
-    logger.info(f"Mejores parámetros: {study.best_params}")
-  
+    if trials_a_ejecutar > 0:
+        study.optimize(lambda trial: objetivo_ganancia(trial, df, undersampling), n_trials=trials_a_ejecutar)
+        logger.info(f"🏆 Mejor ganancia: {study.best_value:,.0f}")
+        logger.info(f"Mejores parámetros: {study.best_params}")
+    else:
+        logger.info(f"✅ Ya se completaron {n_trials} trials")
   
     return study
-    
+
+def aplicar_undersampling(df: pd.DataFrame, ratio: float, random_state: int = None) -> pd.DataFrame:
+    pass

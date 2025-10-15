@@ -63,9 +63,9 @@ def ganancia_lgb_binary(y_pred, y_true):
     return 'ganancia', ganancia_total, True  # True = higher is better
 
 # Función de evaluación personalizada para ganancia con ordenamiento
-def ganancia_evaluator(y_pred, y_true) -> float:
+def ganancia_evaluator(y_pred, y_true) -> tuple:
     """
-    Función de evaluación personalizada para LightGBM.
+    Función de evaluación personalizada para LightGBM usando Polars.
     Ordena probabilidades de mayor a menor y calcula ganancia acumulada
     para encontrar el punto de máxima ganancia.
     
@@ -74,23 +74,28 @@ def ganancia_evaluator(y_pred, y_true) -> float:
         y_true: Dataset de LightGBM con labels verdaderos
     
     Returns:
-        float: Ganancia total
+        tuple: (eval_name, ganancia_maxima, is_higher_better)
     """
-    y_true = y_true.get_label()
+    y_true_labels = y_true.get_label()
     
-    # Convertir a DataFrame de Polars para procesamiento eficiente
-    df_eval = pl.DataFrame({'y_true': y_true,'y_pred_proba': y_pred})
-            
-    # Ordenar por probabilidad descendente
-    df_ordenado = df_eval.sort('y_pred_proba', descending=True)
-            
-    # Calcular ganancia individual para cada cliente
-    df_ordenado = df_ordenado.with_columns([pl.when(pl.col('y_true') == 1).then(GANANCIA_ACIERTO).otherwise(-COSTO_ESTIMULO).alias('ganancia_individual')])
-            
-    # Calcular ganancia acumulada
-    df_ordenado = df_ordenado.with_columns([pl.col('ganancia_individual').cum_sum().alias('ganancia_acumulada')])
-            
-    # Encontrar la ganancia máxima
-    ganancia_maxima = df_ordenado.select(pl.col('ganancia_acumulada').max()).item()
+    # Pipeline optimizado con Polars: crear DataFrame, ordenar y calcular en una sola cadena
+    ganancia_maxima = (
+        pl.DataFrame({
+            'y_true': y_true_labels,
+            'y_pred_proba': y_pred
+        })
+        .sort('y_pred_proba', descending=True)
+        .with_columns([
+            # Calcular ganancia individual y acumulada en una sola operación
+            pl.when(pl.col('y_true') == 1)
+              .then(pl.lit(GANANCIA_ACIERTO))
+              .otherwise(pl.lit(-COSTO_ESTIMULO))
+              .cum_sum()
+              .alias('ganancia_acumulada')
+        ])
+        .select(pl.col('ganancia_acumulada').max())
+        .item()
+    )
         
     return 'ganancia', ganancia_maxima, True
+

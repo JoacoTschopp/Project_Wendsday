@@ -10,8 +10,9 @@ PATH_CONFIG = os.path.join(os.path.dirname(os.path.dirname(__file__)), "conf.yam
 try:
     with open(PATH_CONFIG, "r") as f:
         _cfgGeneral = yaml.safe_load(f)
-        _cfg = _cfgGeneral["competencia01"]
+        _cfg = _cfgGeneral["competencia02"]
         PARAMETROS_LGB = _cfgGeneral["parametros_lgb"]
+        BUCKET_NAME = _cfgGeneral.get("BUCKET_NAME", "")
 
         STUDY_NAME = _cfgGeneral.get("STUDY_NAME", "Wendsday")
         DATA_PATH = _cfg.get("DATA_PATH", "../data/competencia.csv")

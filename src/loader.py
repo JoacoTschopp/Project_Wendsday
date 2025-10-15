@@ -30,7 +30,7 @@ def convertir_clase_ternaria_a_target(df: pd.DataFrame, baja_2_1=True) -> pd.Dat
         pd.DataFrame: DataFrame con clase_ternaria convertida a valores binarios (0, 1)
     """
 
-    logger.info("Convirtiendo clase_ternaria a target binario")
+    #logger.info("Convirtiendo clase_ternaria a target binario")
     
     # Contar valores originales para logging (antes de modificar)
     n_continua_orig = (df['clase_ternaria'] == 'CONTINUA').sum()
@@ -49,9 +49,9 @@ def convertir_clase_ternaria_a_target(df: pd.DataFrame, baja_2_1=True) -> pd.Dat
     n_ceros = (df['clase_ternaria'] == 0).sum()
     n_unos = (df['clase_ternaria'] == 1).sum()
     
-    logger.info(f"Conversión completada:")
-    logger.info(f"  Original - CONTINUA: {n_continua_orig}, BAJA+1: {n_baja1_orig}, BAJA+2: {n_baja2_orig}")
-    logger.info(f"  Binario - 0: {n_ceros}, 1: {n_unos}")
-    logger.info(f"  Distribución: {n_unos/(n_ceros + n_unos)*100:.2f}% casos positivos")
+    #logger.info(f"Conversión completada:")
+    #logger.info(f"  Original - CONTINUA: {n_continua_orig}, BAJA+1: {n_baja1_orig}, BAJA+2: {n_baja2_orig}")
+    #logger.info(f"  Binario - 0: {n_ceros}, 1: {n_unos}")
+    #logger.info(f"  Distribución: {n_unos/(n_ceros + n_unos)*100:.2f}% casos positivos")
 
     return df

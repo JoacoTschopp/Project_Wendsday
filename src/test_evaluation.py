@@ -6,7 +6,7 @@ import polars as pl
 from .config import *
 from .gain_function import calcular_ganancia, ganancia_evaluator
 from .loader import convertir_clase_ternaria_a_target
-from .optimization_cv import aplicar_undersampling
+from .optimization import aplicar_undersampling
 from datetime import datetime
 import os
 import json
