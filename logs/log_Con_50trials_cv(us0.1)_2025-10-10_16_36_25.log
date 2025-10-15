@@ -1,6 +1,0 @@
-﻿2025-10-10 16:36:25,795 - INFO - __main__ 40 - Inicio de ejecucion.
-2025-10-10 16:36:25,795 - INFO - __main__ 108 - === SIMULACIÓN DE KAGGLE ===
-2025-10-10 16:36:33,051 - INFO - src.polars_split_simulation 454 - PDF de tendencias por iteración generado en resultados\Con_50trials_cv(us0.1)_iteraciones_trends_20251010_163625.pdf
-2025-10-10 16:36:33,054 - INFO - __main__ 121 - 📝 Log detallado: logs/log_Con_50trials_cv(us0.1)_2025-10-10_16_36_25.log
-2025-10-10 16:36:33,054 - INFO - __main__ 122 - 📝 Resultados guardados en: resultados/Con_50trials_cv(us0.1)_polars_split_20251010_160747.json
-2025-10-10 16:36:33,054 - INFO - __main__ 123 - >>> Ejecución finalizada. Revisar logs para mas detalles.
