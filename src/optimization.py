@@ -82,7 +82,7 @@ def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame, undersampling
     val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
     
     #####
-    #ESTO ES OPTIMO, ENTRENAR UN SOLO MODELO!
+    #ESTO NO ES OPTIMO, ENTRENAR UN SOLO MODELO!
     #####
     model = lgb.train(
         params,

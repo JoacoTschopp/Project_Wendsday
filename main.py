@@ -43,7 +43,6 @@ def main():
     #00 Cargar datos
     os.makedirs(f"{BUCKET_NAME}/data", exist_ok=True)
     data_path = os.path.join(BUCKET_NAME, DATA_PATH)
-    print(data_path)
     df = cargar_datos(data_path)       
 
     #01 Feature Engineering
