@@ -1,4 +1,4 @@
-STUDY_NAME : "Compe_02_(V0.1)"
+STUDY_NAME : "Experimento_v4"
 
 BUCKET_NAME: "/users/joaquintschopp/TSCHOPP-PROJECT/Compe_02"
 
@@ -14,18 +14,22 @@ competencia01:
     COSTO_ESTIMULO: 20000
 
 competencia02:
-    DATA_PATH: "data/competencia.csv"
+    DATA_PATH: "data/competencia_02_ct.csv"
     SEMILLA: [811157, 502717, 782911, 464939, 213713]
-    MES_TRAIN: [202101, 202102]
-    MES_VALIDACION: 202103
-    MES_TEST: 202104
+    MES_TRAIN: [202101, 202102, 202103]
+    MES_VALIDACION: 202104
+    MES_TEST: 202106
     FINAL_TRAIN: [202101, 202102, 202103, 202104]
     FINAL_PREDIC: 202106
     GANANCIA_ACIERTO: 780000
     COSTO_ESTIMULO: 20000
 
+mlflow:
+  TRACKING_URI: "http://52.144.47.145:8080"
+  ARTIFACT_PATH: "./mlruns"
+
 parametros_lgb:
-    n_trail: 100
+    n_trail: 50
     num_leaves: [10, 300]
     learning_rate: [0.01, 0.3]
     feature_fraction: [0.4, 1.0]
@@ -36,4 +40,5 @@ parametros_lgb:
     reg_lambda: [0.0, 10.0]
     min_data_in_leaf: [1, 50]
     num_iterations: [100, 1000]
-    bin: [31]
+    max_bin: [31]
+    bagging_freq: [1, 7]

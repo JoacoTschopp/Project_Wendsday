@@ -5,10 +5,10 @@ import logging
 import os
 from datetime import datetime
 from .config import FINAL_TRAIN, FINAL_PREDIC, SEMILLA
-from .optimization import aplicar_undersampling
 from .best_params import cargar_mejores_hiperparametros
 from .gain_function import ganancia_lgb_binary, ganancia_evaluator
 from .loader import convertir_clase_ternaria_a_target
+from .undersampling import aplicar_undersampling
 
 logger = logging.getLogger(__name__)
 

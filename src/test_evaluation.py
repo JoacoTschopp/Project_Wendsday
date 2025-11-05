@@ -6,10 +6,11 @@ import polars as pl
 from .config import *
 from .gain_function import calcular_ganancia, ganancia_evaluator
 from .loader import convertir_clase_ternaria_a_target
-from .optimization import aplicar_undersampling
 from datetime import datetime
 import os
 import json
+
+from .undersampling import aplicar_undersampling
 
 logger = logging.getLogger(__name__)
 
@@ -43,28 +44,26 @@ def evaluar_en_test(
     
     # Crear copias ANTES de las conversiones para evitar modificar el DataFrame original
     df_train_copy = df.copy()
-    df_test_copy = df.copy()
 
     # Convertir clase_ternaria a target binario
-    df_train_completo = convertir_clase_ternaria_a_target(df_train_copy, baja_2_1=True)
-    df_test = convertir_clase_ternaria_a_target(df_test_copy, baja_2_1=False)
+    df_train_completo = convertir_clase_ternaria_a_target(df_train_copy, baja_2_1=False)
     
     # Filtrar por períodos antes de extraer features para optimizar memoria
-    df_train_completo = df_train_completo[df_train_completo['foto_mes'].isin(periodos_entrenamiento)]
-    df_test = df_test[df_test['foto_mes'] == MES_TEST]
+    df_train = df_train_completo[df_train_completo['foto_mes'].isin(periodos_entrenamiento)]
+    df_test = df_train_completo[df_train_completo['foto_mes'] == MES_TEST]
 
     if undersampling < 1.0:
         logger.info(f"Aplicando undersampling (ratio={undersampling}) en entrenamiento")
-        df_train_completo = aplicar_undersampling(df_train_completo, undersampling, random_state=semilla)
+        df_train = aplicar_undersampling(df_train, undersampling, random_state=semilla)
     
     # Extraer target antes de eliminar la columna para evitar problemas de memoria
-    y_train = df_train_completo['clase_ternaria'].values.astype(np.int32)
+    y_train = df_train['clase_ternaria'].values.astype(np.int32)
     y_test = df_test['clase_ternaria'].values.astype(np.int32)
     
     # Features: crear copias más pequeñas sin la columna target
     # Usar una lista de columnas en lugar de drop para ser más eficiente en memoria
-    feature_columns = [col for col in df_train_completo.columns if col != 'clase_ternaria']
-    X_train = df_train_completo[feature_columns].copy()
+    feature_columns = [col for col in df_train.columns if col != 'clase_ternaria']
+    X_train = df_train[feature_columns].copy()
     X_test = df_test[feature_columns].copy()
     
     # Liberar memoria de los DataFrames grandes
@@ -92,30 +91,11 @@ def evaluar_en_test(
     y_pred_proba = model.predict(X_test)
 
     # Calcular solo la ganancia
-    # Convertir a DataFrame de Polars para procesamiento eficiente
-    # y_test ya tiene tipo int32 desde la extracción
-    df_eval = pl.DataFrame({'y_true': y_test, 'y_pred_proba': y_pred_proba})
-    
-    # Ordenar por probabilidad descendente
-    df_ordenado = df_eval.sort('y_pred_proba', descending=True)
-    
-    # Calcular ganancia individual para cada cliente
-    df_ordenado = df_ordenado.with_columns([
-        pl.when(pl.col('y_true') == 1).then(GANANCIA_ACIERTO).otherwise(-COSTO_ESTIMULO).alias('ganancia_individual')
-    ])
-    
-    # Calcular ganancia acumulada
-    df_ordenado = df_ordenado.with_columns([
-        pl.col('ganancia_individual').cum_sum().alias('ganancia_acumulada')
-    ])
-    
-    # Encontrar la ganancia máxima
-    ganancia_test = df_ordenado.select(pl.col('ganancia_acumulada').max()).item()
-    
-    
+    ganancia_test, _ = calcular_ganancia(y_true=y_test, y_pred=y_pred_proba)
+       
     return ganancia_test, y_pred_proba
 
-def guardar_resultados_test(ganancia_test: float, archivo_base=None):
+def guardar_resultados_test(ganancia_test: float, archivo_base=None) -> str:
     """
     Atributos:
         ganancia_test: Resultados de la evaluación en test
@@ -123,6 +103,7 @@ def guardar_resultados_test(ganancia_test: float, archivo_base=None):
     
     Description:    
         Guarda los resultados de la evaluación en test en un archivo JSON.
+        Retorna la ruta del archivo generado para facilitar su registro externo (MLflow, etc.).
     """
 
     if archivo_base is None:
@@ -166,5 +147,4 @@ def guardar_resultados_test(ganancia_test: float, archivo_base=None):
         json.dump(datos_existentes, f, indent=2)
 
     logger.info(f"Resultados guardados en {archivo}")
-        
-        
+    return archivo

@@ -1,18 +1,35 @@
-import optuna
-import lightgbm as lgb
-import pandas as pd
-import numpy as np
-import logging
 import json
+import logging
 import os
 from datetime import datetime
+
+import lightgbm as lgb
+import numpy as np
+import optuna
+import pandas as pd
+
 from .config import *
-from .gain_function import calcular_ganancia, ganancia_lgb_binary, ganancia_evaluator
+from .gain_function import ganancia_evaluator
 from .loader import convertir_clase_ternaria_a_target
+from .undersampling import aplicar_undersampling
+import mlflow
 
 logger = logging.getLogger(__name__)
 
-def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame, undersampling: float = 1) -> float:
+def _preparar_datos_entrenamiento(df: pd.DataFrame) -> pd.DataFrame:
+    """Prepara datos combinando TRAIN + VALIDACIÓN para CV."""
+    if isinstance(MES_TRAIN, list):
+        periodos_entrenamiento = MES_TRAIN + [MES_VALIDACION]
+    else:
+        periodos_entrenamiento = [MES_TRAIN, MES_VALIDACION]
+
+    df_train = df[df["foto_mes"].isin(periodos_entrenamiento)].copy()
+    df_train = convertir_clase_ternaria_a_target(df_train, baja_2_1=True)
+    df_train["clase_ternaria"] = df_train["clase_ternaria"].astype(np.int8)
+    return df_train
+
+
+def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame, undersampling: float = 1.0) -> float:
     """
     Parameters:
     trial: trial de optuna
@@ -41,68 +58,76 @@ def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame, undersampling
         'feature_fraction': trial.suggest_float('feature_fraction', PARAMETROS_LGB['feature_fraction'][0], PARAMETROS_LGB['feature_fraction'][1]),
         'bagging_fraction': trial.suggest_float('bagging_fraction', PARAMETROS_LGB['bagging_fraction'][0], PARAMETROS_LGB['bagging_fraction'][1]),
         'min_child_samples': trial.suggest_int('min_child_samples', PARAMETROS_LGB['min_child_samples'][0], PARAMETROS_LGB['min_child_samples'][1]),
+        "bagging_freq": trial.suggest_int("bagging_freq", PARAMETROS_LGB['bagging_freq'][0], PARAMETROS_LGB['bagging_freq'][1]), 
         'max_depth': trial.suggest_int('max_depth', PARAMETROS_LGB['max_depth'][0], PARAMETROS_LGB['max_depth'][1]),
         'reg_alpha': trial.suggest_float('reg_alpha', PARAMETROS_LGB['reg_alpha'][0], PARAMETROS_LGB['reg_alpha'][1]),
         'reg_lambda': trial.suggest_float('reg_lambda', PARAMETROS_LGB['reg_lambda'][0], PARAMETROS_LGB['reg_lambda'][1]),
         'min_gain_to_split': 0.0,  # Permitir splits con ganancia mínima
-        'verbose': -1,  # Reducir verbosidad
         'verbosity': -1,  # Silenciar mensajes adicionales
-        'silent': True,  # Modo silencioso
-        'bin': 31,
-        'random_state': SEMILLA[0],  # Desde configuración YAML
+        'max_bin': 31,
+        'seed': SEMILLA[0],  # Desde configuración YAML
     }
   
-    # Preparar datos usando configuración YAML
-    # MES_TRAIN ahora puede ser una lista o un solo valor
-    if isinstance(MES_TRAIN, list):
-        df_train = df[df['foto_mes'].isin(MES_TRAIN)]
-    else:
-        df_train = df[df['foto_mes'] == MES_TRAIN]
-    
-    df_val = df[df['foto_mes'] == MES_VALIDACION]
-    
-    #Convierto a binaria la clase ternaria, 
-    # para entrenar el modelo Baja+1 y Baja+2 == 1
-    # y calcular la ganancia de validacion Baja+2 solamente en 1
-    df_train = convertir_clase_ternaria_a_target(df_train, baja_2_1=True)
-    df_val = convertir_clase_ternaria_a_target(df_val, baja_2_1=False)
-    df_train['clase_ternaria'] = df_train['clase_ternaria'].astype(np.int8)
-    df_val['clase_ternaria'] = df_val['clase_ternaria'].astype(np.int8)
+    df_cv = _preparar_datos_entrenamiento(df)
 
-    # Usar target (clase_ternaria ya convertida a binaria)
-    y_train = df_train['clase_ternaria'].values
-    y_val = df_val['clase_ternaria'].values
-    
-    # Features: usar todas las columnas excepto target
-    X_train = df_train.drop(columns=['clase_ternaria'])
-    X_val = df_val.drop(columns=['clase_ternaria'])
-    
-    # Entrenar modelo con función de ganancia personalizada
-    train_data = lgb.Dataset(X_train, label=y_train)
-    val_data = lgb.Dataset(X_val, label=y_val, reference=train_data)
-    
-    #####
-    #ESTO NO ES OPTIMO, ENTRENAR UN SOLO MODELO!
-    #####
-    model = lgb.train(
+    if undersampling < 1.0:
+        df_cv = aplicar_undersampling(df_cv, ratio=undersampling)
+
+    X = df_cv.drop(columns=["clase_ternaria"])
+    y = df_cv["clase_ternaria"].values
+
+    dataset = lgb.Dataset(X, label=y)
+
+    seed = SEMILLA[0] if isinstance(SEMILLA, list) else int(SEMILLA)
+
+    cv_results = lgb.cv(
         params,
-        train_data,
-        valid_sets=[val_data],
-        feval=ganancia_evaluator,  # Función de ganancia personalizada
-        callbacks=[lgb.early_stopping(50), lgb.log_evaluation(0)]
+        dataset,
+        nfold=5,
+        num_boost_round=2000,
+        stratified=True,
+        seed=seed,
+        feval=ganancia_evaluator,
+        callbacks=[
+            lgb.early_stopping(200),
+            lgb.log_evaluation(period=0),
+        ],
     )
-    
-    # Predecir y calcular ganancia
-    y_pred_proba = model.predict(X_val)
-    
-    _, ganancia_total, _ = ganancia_evaluator(y_pred_proba, val_data)
 
-    # Guardar cada iteración en JSON
-    guardar_iteracion(trial, ganancia_total)
-  
-    logger.info(f"Trial {trial.number}: Ganancia = {ganancia_total:,.0f}")
-  
-    return ganancia_total
+    metric_candidates = [k for k in cv_results.keys() if k.endswith('-mean')]
+    if metric_candidates:
+        logger.debug(
+            "Trial %s: métricas devueltas por lgb.cv: %s",
+            trial.number,
+            metric_candidates,
+        )
+
+    if not metric_candidates:
+        logger.warning(
+            "Trial %s: lgb.cv no devolvió métricas con sufijo '-mean'. Keys obtenidas: %s",
+            trial.number,
+            list(cv_results.keys()),
+        )
+        ganancia_best = 0.0
+        best_iteration = 0
+    else:
+        metric_name = metric_candidates[0]
+        ganancias_mean = np.array(cv_results[metric_name])
+        best_iteration = int(np.argmax(ganancias_mean)) + 1
+        ganancia_best = float(ganancias_mean[best_iteration - 1])
+
+    guardar_iteracion(trial, ganancia_best)
+
+    mlflow.log_metric("ganancia_best", ganancia_best, step=trial.number) # loggear la ganancia en mlflow
+
+    logger.info(
+        "Trial %s: Ganancia (promedio 5-fold) = %s | best_iteration=%s",
+        trial.number,
+        f"{ganancia_best:,.0f}",
+        best_iteration,
+    )
+
+    return ganancia_best
 
 
 def guardar_iteracion(trial, ganancia, archivo_base=None):
@@ -130,7 +155,7 @@ def guardar_iteracion(trial, ganancia, archivo_base=None):
         'configuracion': {
             'semilla': SEMILLA,
             'mes_train': MES_TRAIN,
-            'mes_validacion': MES_VALIDACION
+            #'mes_validacion': MES_VALIDACION
         }
     }
   
@@ -265,6 +290,3 @@ def optimizar(df: pd.DataFrame, n_trials: int, study_name: str = None, undersamp
         logger.info(f"✅ Ya se completaron {n_trials} trials")
   
     return study
-
-def aplicar_undersampling(df: pd.DataFrame, ratio: float, random_state: int = None) -> pd.DataFrame:
-    pass

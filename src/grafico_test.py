@@ -13,6 +13,7 @@ from .gain_function import calcular_ganancia
 from .best_params import cargar_mejores_hiperparametros
 from .test_evaluation import evaluar_en_test
 from .loader import convertir_clase_ternaria_a_target
+import mlflow
 
 logger = logging.getLogger(__name__)
 
@@ -63,36 +64,6 @@ def _generar_semillas_primas(tiradas: int, semilla_base: int) -> np.ndarray:
             usados.add(primo)
 
     return np.array(semillas, dtype=np.int64)
-
-
-def calcular_ganancia_acumulada(y_true: np.ndarray, y_pred_proba: np.ndarray) -> np.ndarray:
-    """
-    Calcula la ganancia acumulada ordenando las predicciones de mayor a menor probabilidad.
-    
-    Args:
-        y_true: Valores verdaderos
-        y_pred_proba: Probabilidades predichas
-    
-    Returns:
-        np.ndarray: Ganancias acumuladas
-    """
-    # Ordenar por probabilidad descendente
-    orden_indices = np.argsort(y_pred_proba)[::-1]
-    y_true_ordenado = y_true[orden_indices]
-    
-    # Calcular ganancia acumulada
-    ganancias_acumuladas = np.zeros(len(y_true))
-    
-    for i in range(1, len(y_true_ordenado) + 1):
-        # Tomar los primeros i clientes ordenados
-        y_true_subset = y_true_ordenado[:i]
-        y_pred_subset = np.ones(i)  # Todos los seleccionados son positivos
-        
-        # Calcular ganancia usando la función existente
-        ganancia_actual = calcular_ganancia(y_true_subset, y_pred_subset)
-        ganancias_acumuladas[i-1] = ganancia_actual
-    
-    return ganancias_acumuladas
 
 def crear_grafico_ganancia_test(y_true: np.ndarray, y_pred_proba: np.ndarray, ganancias_acumuladas: np.ndarray) -> str:
     """
@@ -352,8 +323,10 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
     logger.info(f"  - Umbral de filtrado: {umbral_ganancia:,.0f} (66% del máximo global)")
     logger.info(f"  - CURVA MEDIA: Ganancia máxima: {ganancia_maxima_media:,.0f} en {indice_maximo_media:,} clientes")
     
+
     for resultado in resultados_por_semilla:
         logger.info(f"  - Semilla {resultado['semilla']}: Max={resultado['ganancia_maxima']:,.0f}, Corte={resultado['indice_maximo']:,}")
+        mlflow.log_metric("ganancia_maxima", resultado['ganancia_maxima'], step=resultado['semilla'])
     
     logger.info(f"Gráfico comparativo guardado en: {ruta_archivo}")
     
@@ -401,7 +374,7 @@ def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int, undersampling:
         )
         
         # Calcular ganancia acumulada
-        ganancias_acumuladas = calcular_ganancia_acumulada(y_true, y_pred_proba)
+        _, ganancias_acumuladas = calcular_ganancia(y_pred=y_pred_proba, y_true=y_true)
         
         # Encontrar la ganancia máxima y su índice
         ganancia_maxima = np.max(ganancias_acumuladas)
