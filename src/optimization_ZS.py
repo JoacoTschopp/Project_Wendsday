@@ -176,30 +176,41 @@ def _persistir_resultados(
     iter_path = os.path.join("resultados", f"{archivo_base}_zs_iteraciones.json")
     best_path = os.path.join("resultados", f"{archivo_base}_zs_best_params.json")
 
-    registro = {
-        "datetime": datetime.now().isoformat(),
-        "ganancia_validacion": float(ganancia_validacion),
-        "umbral_sugerido": float(umbral_sugerido),
-        "params_flaml": params_flaml,
-        "params_lightgbm": params_lightgbm,
-        "n_proba_val": len(proba_val),
-    }
-
+    # Obtener número de trial (basado en cantidad de registros existentes)
     if os.path.exists(iter_path):
         try:
             with open(iter_path, "r", encoding="utf-8") as f:
-                contenido = json.load(f)
-            if not isinstance(contenido, list):
-                contenido = []
+                contenido_existente = json.load(f)
+            if not isinstance(contenido_existente, list):
+                contenido_existente = []
+            trial_number = len(contenido_existente)
         except json.JSONDecodeError:
-            contenido = []
+            contenido_existente = []
+            trial_number = 0
     else:
-        contenido = []
+        contenido_existente = []
+        trial_number = 0
 
-    contenido.append(registro)
+    # Preparar configuración
+    configuracion = {
+        "semilla": SEMILLA if isinstance(SEMILLA, list) else [SEMILLA],
+        "mes_train": MES_TRAIN if isinstance(MES_TRAIN, list) else [MES_TRAIN],
+    }
+
+    # Crear registro en el formato solicitado
+    registro = {
+        "trial_number": trial_number,
+        "params": params_lightgbm,
+        "value": float(ganancia_validacion),
+        "datetime": datetime.now().isoformat(),
+        "state": "COMPLETE",
+        "configuracion": configuracion,
+    }
+
+    contenido_existente.append(registro)
 
     with open(iter_path, "w", encoding="utf-8") as f:
-        json.dump(contenido, f, indent=2)
+        json.dump(contenido_existente, f, indent=2)
 
     with open(best_path, "w", encoding="utf-8") as f:
         json.dump({"params_lightgbm": params_lightgbm, "params_flaml": params_flaml}, f, indent=2)

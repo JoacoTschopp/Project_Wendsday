@@ -333,7 +333,7 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
     return ruta_archivo
 
 
-def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int, undersampling: float = 1.0) -> str:
+def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int, undersampling: float = 1.0, zs_best_path: str = None) -> str:
     """
     Función principal que genera el gráfico de test con 5 entrenamientos diferentes usando todas las semillas.
     
@@ -346,7 +346,11 @@ def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int, undersampling:
     logger.info("=== INICIANDO GENERACIÓN DE GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS ===")
     
     # Cargar mejores hiperparámetros
-    mejores_params = cargar_mejores_hiperparametros()
+    if zs_best_path:
+        mejores_params = cargar_mejores_hiperparametros(zs_best_path)
+    else:
+        mejores_params = cargar_mejores_hiperparametros()
+
     
     # Obtener datos de test (comunes para todas las semillas)
     # Crear copia para evitar modificar el DataFrame original

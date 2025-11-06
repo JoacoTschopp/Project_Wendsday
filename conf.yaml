@@ -1,7 +1,7 @@
-STUDY_NAME : "Experimento_v4.1"
+STUDY_NAME : "Experimento_v4.2"
 
-BUCKET_NAME: "C:\\Users\\tschoppj\\proyectos_maestria\\TSCHOPP-PROJECT\\Compe_02"
-#/users/joaquintschopp/TSCHOPP-PROJECT
+#BUCKET_NAME: "C:\\Users\\tschoppj\\proyectos_maestria\\TSCHOPP-PROJECT\\Compe_02"
+BUCKET_NAME: "/users/joaquintschopp/TSCHOPP-PROJECT/Compe_02"
 
 competencia01:
     DATA_PATH: "./data/competencia.csv"

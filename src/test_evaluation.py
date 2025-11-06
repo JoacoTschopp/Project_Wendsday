@@ -73,8 +73,10 @@ def evaluar_en_test(
     train_data = lgb.Dataset(X_train, label=y_train)
 
     params_entrenamiento = dict(mejores_params)
-    params_entrenamiento['verbose'] = -1
-    params_entrenamiento['seed'] = semilla
+    if 'verbose' not in params_entrenamiento:
+        params_entrenamiento['verbose'] = -1
+    if 'seed' not in params_entrenamiento:
+        params_entrenamiento['seed'] = semilla
     num_boost_round = params_entrenamiento.pop('num_iterations', params_entrenamiento.pop('num_boost_round', 300))
 
     logger.info(f"Semilla de entrenamiento: {semilla}")
