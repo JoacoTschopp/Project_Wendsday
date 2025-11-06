@@ -44,7 +44,6 @@ def main():
     #00 Cargar datos
     os.makedirs(f"{BUCKET_NAME}/data", exist_ok=True)
     data_path = os.path.join(BUCKET_NAME, DATA_PATH)
-    df = cargar_datos(data_path)       
 
     #01 Feature Engineering
     
@@ -63,13 +62,17 @@ def main():
         df_fe = pd.read_csv(os.path.join(BUCKET_NAME, "data", f"df_fe{STUDY_NAME}.csv"))
     else:
         logger.info("❌ df_fe.csv no encontrado")
+
+        df = cargar_datos(data_path)
+        # Eliminamos Atributos rotos: mprestamos_personales y cprestamos_personales
+        df = df.drop(columns=["mprestamos_personales", "cprestamos_personales"])
+
         atributos = [col for col in df.columns if col.startswith(('c', 'm'))]
         atributos.remove("clase_ternaria")
-        cant_lag = 3
+        cant_lag = 2
         df_fe = feature_engineering_lag(df, atributos, cant_lag)
         df_fe = feature_engineering_delta_lag(df, atributos, cant_lag)
-        # Eliminamos Atributos rotos: mprestamos_personales y cprestamos_personales
-        df_fe = df_fe.drop(columns=["mprestamos_personales", "cprestamos_personales"])
+        
         logger.info(f"Feature Engineering completado: {df_fe.shape}")
         logger.info("Guardando df_fe.csv")
 

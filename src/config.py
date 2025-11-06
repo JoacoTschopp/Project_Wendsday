@@ -51,7 +51,8 @@ try:
         MLFLOW_TRACKING_URI = f"file://{_default_artifact_dir}"
 
     # Configuración directa sin plantillas
-    MLFLOW_EXPERIMENT_NAME = f"DMEyF-{STUDY_NAME}"
+    #MLFLOW_EXPERIMENT_NAME = f"DMEyF-{STUDY_NAME}"
+    MLFLOW_EXPERIMENT_NAME = "DMEyF-Tschopp"
     MLFLOW_ARTIFACT_PATH = _default_artifact_dir
     MLFLOW_REGISTERED_MODEL_NAME = f"dmeyf-{STUDY_NAME}"
   
