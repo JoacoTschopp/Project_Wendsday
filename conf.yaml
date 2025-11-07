@@ -1,7 +1,7 @@
-STUDY_NAME : "Experimento_v4.2"
+STUDY_NAME : "Experimento_v5"
 
-#BUCKET_NAME: "C:\\Users\\tschoppj\\proyectos_maestria\\TSCHOPP-PROJECT\\Compe_02"
-BUCKET_NAME: "/users/joaquintschopp/TSCHOPP-PROJECT/Compe_02"
+BUCKET_NAME: "C:\\Users\\tschoppj\\proyectos_maestria\\TSCHOPP-PROJECT\\Compe_02"
+#BUCKET_NAME: "/users/joaquintschopp/TSCHOPP-PROJECT/Compe_02"
 
 competencia01:
     DATA_PATH: "./data/competencia.csv"
@@ -31,6 +31,7 @@ mlflow:
 
 parametros_lgb:
     n_trail: 50
+    # Parámetros a optimizar (rangos [min, max])
     num_leaves: [10, 300]
     learning_rate: [0.01, 0.3]
     feature_fraction: [0.4, 1.0]
@@ -41,5 +42,10 @@ parametros_lgb:
     reg_lambda: [0.0, 10.0]
     min_data_in_leaf: [1, 50]
     num_iterations: [100, 1000]
-    max_bin: [31]
     bagging_freq: [1, 7]
+    # Parámetros fijos (valor único)
+    objective: "binary"
+    metric: "None"
+    min_gain_to_split: 0.0
+    verbosity: -1
+    max_bin: 31

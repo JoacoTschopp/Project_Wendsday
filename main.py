@@ -10,7 +10,7 @@ from src.features import feature_engineering_lag, feature_engineering_delta_lag
 from src.optimization_BO import optimizar
 from src.optimization_ZS import optimizar_zero_shot
 
-from src.best_params import cargar_mejores_hiperparametros, cargar_mejores_hiperparametros_zs
+from src.best_params import cargar_mejores_hiperparametros
 
 from src.test_evaluation import evaluar_en_test, guardar_resultados_test
 from src.final_training import preparar_datos_entrenamiento_final, generar_predicciones_finales, entrenar_modelo_final
@@ -50,7 +50,7 @@ def _optimizacion_zs(df_fe: pd.DataFrame):
         
     if os.path.exists(zs_iter_path) and os.path.exists(zs_best_path):
         logger.info("✅ Archivos ZeroShot encontrados. Cargando hiperparámetros...")
-        params_lightgbm = cargar_mejores_hiperparametros_zs()
+        params_lightgbm = cargar_mejores_hiperparametros(archivo_json=zs_iter_path)
         
         # Cargar información adicional desde el archivo de iteraciones
         with open(zs_iter_path, 'r') as f:
@@ -92,7 +92,7 @@ def _optimizacion_zs(df_fe: pd.DataFrame):
     # Loggear en MLflow
     mlflow.log_metric("ganancia_validacion", ganancia_val)
     mlflow.log_metric("umbral_sugerido", umbral_sugerido)
-    mlflow.log_params({f"best_{k}": v for k, v in params_lightgbm.items()})
+    mlflow.log_params({f"best_ZS_{k}": v for k, v in params_lightgbm.items()})
     mlflow.log_artifact(paths["iteraciones"])
     mlflow.log_artifact(paths["best_params"])    
     logger.info(f"Ganancia VALID={ganancia_val:,.0f} | Umbral={umbral_sugerido:.4f}")
@@ -101,9 +101,9 @@ def _optimizacion_zs(df_fe: pd.DataFrame):
 
     logger.info("=== EVALUACIÓN EN CONJUNTO DE TEST ===")
     logger.info("Usando hiperparámetros encontrados en ZeroShot")
-    ganancia_test, _ = evaluar_en_test(df_fe, params_lightgbm, undersampling=1)
-    mlflow.log_metric("ganancia_test", ganancia_test) # loggear la ganancia en mlflow
-    logger.info(f"✅ Ganancia en test: {ganancia_test:,.0f}")
+    ganancia_test, _ = evaluar_en_test(df=df_fe, mejores_params=params_lightgbm, undersampling=1)
+    mlflow.log_metric("ganancia_test_ZS", ganancia_test) # loggear la ganancia en mlflow
+    logger.info(f"✅ Ganancia en test ZS: {ganancia_test:,.0f}")
         
 
 
@@ -116,7 +116,7 @@ def _optimizacion_zs(df_fe: pd.DataFrame):
     logger.info(f"✅ Ganancia en test: {ganancia_test:,.0f}")
 
     logger.info("=== GRAFICO DE TEST ===")
-    ruta_grafico = generar_grafico_test_completo(df_fe, tiradas=20, undersampling=1, zs_best_path=paths["best_params"])
+    ruta_grafico = generar_grafico_test_completo(df_fe, params_lightgbm, tiradas=20, undersampling=1)
     logger.info(f"✅ Gráfico generado: {ruta_grafico}")
     mlflow.log_artifact(ruta_grafico) # sube el archivo a mlflow como artifacto .png
 
@@ -180,7 +180,7 @@ def main():
 
     with mlflow.start_run(run_name=f"experimento-{STUDY_NAME}"):
         mlflow.set_tags(MLFLOW_TAGS)
-        """
+
         mlflow.log_param("undersampling_ratio_BO", 0.5)
         mlflow.log_param("n_trials_BO", 50)
         mlflow.log_param("Dimenciones_data", df_fe.shape)
@@ -191,9 +191,8 @@ def main():
 
         # Loggear mejores hiperparámetros
         if study.best_params:
-            mlflow.log_params({f"best_{k}": v for k, v in study.best_params.items()})
-            mlflow.log_metric("best_value", study.best_value)
-
+            mlflow.log_params({f"best_BO_{k}": v for k, v in study.best_params.items()})
+        
         #3.1 Análisis adicional
         logger.info("=== ANÁLISIS DE RESULTADOS ===")
         trials_df = study.trials_dataframe()
@@ -213,8 +212,10 @@ def main():
 
         logger.info("=== EVALUACIÓN EN CONJUNTO DE TEST ===")
         logger.info("Usando hiperparámetros encontrados en BO")
-        mejores_params = cargar_mejores_hiperparametros()
-        ganancia_test, _ = evaluar_en_test(df_fe, mejores_params, undersampling=1)
+        archivo_bo = os.path.join("resultados", f"{STUDY_NAME}_iteraciones.json")
+        mejores_params = cargar_mejores_hiperparametros(archivo_json=archivo_bo)
+            
+        ganancia_test, _ = evaluar_en_test(df=df_fe, mejores_params=mejores_params, undersampling=1)
         mlflow.log_metric("ganancia_test_BO", ganancia_test) # loggear la ganancia en mlflow
         logger.info(f"✅ Ganancia en test BO: {ganancia_test:,.0f}")
         
@@ -229,12 +230,11 @@ def main():
         logger.info(f"✅ Ganancia en test: {ganancia_test:,.0f}")
 
         logger.info("=== GRAFICO DE TEST ===")
-        ruta_grafico = generar_grafico_test_completo(df_fe, tiradas=20, undersampling=1)
+        ruta_grafico = generar_grafico_test_completo(df=df_fe, mejores_params=mejores_params, tiradas=20, undersampling=1)
         logger.info(f"✅ Gráfico generado: {ruta_grafico}")
         mlflow.log_artifact(ruta_grafico) # sube el archivo a mlflow como artifacto .png
 
         logger.info("=== EVALUACIÓN EN CONJUNTO DE TEST COMPLETADA ===")
-        """
 
 
         #04 Sin Optimizacion con el uso de ZeroShot

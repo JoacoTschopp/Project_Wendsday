@@ -10,6 +10,7 @@ from flaml.default import preprocess_and_suggest_hyperparams
 
 from .config import *
 from .loader import convertir_clase_ternaria_a_target
+from .gain_function import calcular_ganancia
 
 logger = logging.getLogger(__name__)
 
@@ -59,19 +60,31 @@ def _calcular_ganancia_desde_probabilidades(
     y_true: np.ndarray,
     y_pred: np.ndarray,
 ) -> Tuple[float, float]:
+    """
+    Calcula ganancia máxima y umbral sugerido usando la función centralizada.
+    
+    Args:
+        y_true: Valores reales (0 o 1)
+        y_pred: Predicciones (probabilidades)
+    
+    Returns:
+        Tuple[float, float]: (ganancia_maxima, umbral_sugerido)
+    """
     if y_pred.ndim > 1:
         y_pred = y_pred[:, 1]
 
-    orden = np.argsort(y_pred)[::-1]
-    y_true_sorted = y_true[orden]
-    y_pred_sorted = y_pred[orden]
-
-    ganancias_unitarias = np.where(y_true_sorted == 1, GANANCIA_ACIERTO, -COSTO_ESTIMULO)
-    ganancia_acumulada = np.cumsum(ganancias_unitarias)
-
-    ganancia_maxima = float(np.max(ganancia_acumulada)) if ganancia_acumulada.size else 0.0
-    idx_max = int(np.argmax(ganancia_acumulada)) if ganancia_acumulada.size else 0
-    umbral_sugerido = float(y_pred_sorted[idx_max]) if ganancia_acumulada.size else 0.5
+    # Usar función centralizada para calcular ganancia
+    ganancia_maxima, ganancias_acumuladas = calcular_ganancia(y_pred=y_pred, y_true=y_true)
+    
+    # Calcular umbral sugerido
+    if ganancias_acumuladas.size > 0:
+        # Ordenar predicciones de mayor a menor
+        orden = np.argsort(y_pred)[::-1]
+        y_pred_sorted = y_pred[orden]
+        idx_max = int(np.argmax(ganancias_acumuladas))
+        umbral_sugerido = float(y_pred_sorted[idx_max])
+    else:
+        umbral_sugerido = 0.5
 
     return ganancia_maxima, umbral_sugerido
 

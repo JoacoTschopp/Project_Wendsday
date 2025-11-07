@@ -47,25 +47,28 @@ def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame, undersampling
     Returns:
     float: ganancia total
     """
-    # Hiperparámetros a optimizar
+    # Hiperparámetros a optimizar (desde conf.yaml)
     params = {
-        'objective': 'binary',
-        'metric': 'None',  # Usamos nuestra métrica personalizada
-
-	#completar a gusto!!!!!!!
+        # Parámetros fijos desde configuración
+        'objective': PARAMETROS_LGB['objective'],
+        'metric': PARAMETROS_LGB['metric'],
+        'min_gain_to_split': PARAMETROS_LGB['min_gain_to_split'],
+        'verbosity': PARAMETROS_LGB['verbosity'],
+        'max_bin': PARAMETROS_LGB['max_bin'],
+        'seed': SEMILLA[0],
+        
+        # Parámetros a optimizar
         'num_leaves': trial.suggest_int('num_leaves', PARAMETROS_LGB['num_leaves'][0], PARAMETROS_LGB['num_leaves'][1]),
         'learning_rate': trial.suggest_float('learning_rate', PARAMETROS_LGB['learning_rate'][0], PARAMETROS_LGB['learning_rate'][1], log=True),
         'feature_fraction': trial.suggest_float('feature_fraction', PARAMETROS_LGB['feature_fraction'][0], PARAMETROS_LGB['feature_fraction'][1]),
         'bagging_fraction': trial.suggest_float('bagging_fraction', PARAMETROS_LGB['bagging_fraction'][0], PARAMETROS_LGB['bagging_fraction'][1]),
         'min_child_samples': trial.suggest_int('min_child_samples', PARAMETROS_LGB['min_child_samples'][0], PARAMETROS_LGB['min_child_samples'][1]),
-        "bagging_freq": trial.suggest_int("bagging_freq", PARAMETROS_LGB['bagging_freq'][0], PARAMETROS_LGB['bagging_freq'][1]), 
         'max_depth': trial.suggest_int('max_depth', PARAMETROS_LGB['max_depth'][0], PARAMETROS_LGB['max_depth'][1]),
         'reg_alpha': trial.suggest_float('reg_alpha', PARAMETROS_LGB['reg_alpha'][0], PARAMETROS_LGB['reg_alpha'][1]),
         'reg_lambda': trial.suggest_float('reg_lambda', PARAMETROS_LGB['reg_lambda'][0], PARAMETROS_LGB['reg_lambda'][1]),
-        'min_gain_to_split': 0.0,  # Permitir splits con ganancia mínima
-        'verbosity': -1,  # Silenciar mensajes adicionales
-        'max_bin': 31,
-        'seed': SEMILLA[0],  # Desde configuración YAML
+        'min_data_in_leaf': trial.suggest_int('min_data_in_leaf', PARAMETROS_LGB['min_data_in_leaf'][0], PARAMETROS_LGB['min_data_in_leaf'][1]),
+        'num_iterations': trial.suggest_int('num_iterations', PARAMETROS_LGB['num_iterations'][0], PARAMETROS_LGB['num_iterations'][1]),
+        'bagging_freq': trial.suggest_int('bagging_freq', PARAMETROS_LGB['bagging_freq'][0], PARAMETROS_LGB['bagging_freq'][1]), 
     }
   
     df_cv = _preparar_datos_entrenamiento(df)
@@ -116,7 +119,7 @@ def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame, undersampling
         best_iteration = int(np.argmax(ganancias_mean)) + 1
         ganancia_best = float(ganancias_mean[best_iteration - 1])
 
-    guardar_iteracion(trial, ganancia_best)
+    guardar_iteracion(trial, ganancia_best, params)
 
     mlflow.log_metric("ganancia_best", ganancia_best, step=trial.number) # loggear la ganancia en mlflow
 
@@ -130,13 +133,14 @@ def objetivo_ganancia(trial: optuna.trial.Trial, df: pd.DataFrame, undersampling
     return ganancia_best
 
 
-def guardar_iteracion(trial, ganancia, archivo_base=None):
+def guardar_iteracion(trial, ganancia, params_completos=None, archivo_base=None):
     """
     Guarda cada iteración de la optimización en un único archivo JSON.
   
     Args:
         trial: Trial de Optuna
         ganancia: Valor de ganancia obtenido
+        params_completos: Diccionario con todos los parámetros (optimizados + fijos)
         archivo_base: Nombre base del archivo (si es None, usa el de config.yaml)
     """
     if archivo_base is None:
@@ -145,10 +149,17 @@ def guardar_iteracion(trial, ganancia, archivo_base=None):
     # Nombre del archivo único para todas las iteraciones
     archivo = f"resultados/{archivo_base}_iteraciones.json"
   
+    # Si se proporcionan params_completos, usarlos; sino, usar solo trial.params
+    if params_completos is not None:
+        # Combinar parámetros optimizados con fijos
+        params_a_guardar = params_completos.copy()
+    else:
+        params_a_guardar = trial.params
+  
     # Datos de esta iteración
     iteracion_data = {
         'trial_number': trial.number,
-        'params': trial.params,
+        'params': params_a_guardar,
         'value': float(ganancia),
         'datetime': datetime.now().isoformat(),
         'state': 'COMPLETE',  # Si llegamos aquí, el trial se completó exitosamente

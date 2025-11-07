@@ -26,7 +26,7 @@ def evaluar_en_test(
     
     Args:
         df: DataFrame con todos los datos
-        mejores_params: Mejores hiperparámetros encontrados por Optuna
+        mejores_params: Mejores hiperparámetros encontrados
         undersampling: Ratio para reducir la clase mayoritaria (1.0 desactiva)
         
     Returns:
@@ -73,20 +73,17 @@ def evaluar_en_test(
     train_data = lgb.Dataset(X_train, label=y_train)
 
     params_entrenamiento = dict(mejores_params)
-    if 'verbose' not in params_entrenamiento:
-        params_entrenamiento['verbose'] = -1
-    if 'seed' not in params_entrenamiento:
-        params_entrenamiento['seed'] = semilla
+    params_entrenamiento['seed'] = semilla
     num_boost_round = params_entrenamiento.pop('num_iterations', params_entrenamiento.pop('num_boost_round', 300))
 
-    logger.info(f"Semilla de entrenamiento: {semilla}")
+    logger.info(f"Semilla de entrenamiento: {params_entrenamiento['seed']}")
     # Entrenar modelo con mejores parámetros
     model = lgb.train(
         params_entrenamiento,
         train_data,
         num_boost_round=num_boost_round,
         feval=ganancia_evaluator,  # Función de ganancia personalizada
-        callbacks=[lgb.log_evaluation(0)]
+        callbacks=[lgb.log_evaluation(0)],
     )
     
     # Predecir y calcular ganancia

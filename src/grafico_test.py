@@ -333,23 +333,28 @@ def crear_grafico_comparativo_multiple_semillas(y_true: np.ndarray, resultados_p
     return ruta_archivo
 
 
-def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int, undersampling: float = 1.0, zs_best_path: str = None) -> str:
+def generar_grafico_test_completo(df: pd.DataFrame, mejores_params: dict = None, tiradas: int = 20, undersampling: float = 1.0, archivo_json: str = None) -> str:
     """
-    Función principal que genera el gráfico de test con 5 entrenamientos diferentes usando todas las semillas.
+    Función principal que genera el gráfico de test con múltiples entrenamientos usando diferentes semillas.
     
     Args:
         df: DataFrame con todos los datos
+        mejores_params: Diccionario con los mejores hiperparámetros (opcional)
+        tiradas: Número de semillas/entrenamientos a realizar
+        undersampling: Ratio de undersampling para entrenamiento
+        archivo_json: Ruta completa al archivo JSON de iteraciones (opcional, si mejores_params es None)
     
     Returns:
         str: Ruta del gráfico generado
     """
     logger.info("=== INICIANDO GENERACIÓN DE GRÁFICO DE TEST CON MÚLTIPLES SEMILLAS ===")
     
-    # Cargar mejores hiperparámetros
-    if zs_best_path:
-        mejores_params = cargar_mejores_hiperparametros(zs_best_path)
-    else:
-        mejores_params = cargar_mejores_hiperparametros()
+    # Cargar mejores hiperparámetros si no se proporcionaron
+    if mejores_params is None:
+        if archivo_json is not None:
+            mejores_params = cargar_mejores_hiperparametros(archivo_json=archivo_json)
+        else:
+            mejores_params = cargar_mejores_hiperparametros()
 
     
     # Obtener datos de test (comunes para todas las semillas)
@@ -365,19 +370,22 @@ def generar_grafico_test_completo(df: pd.DataFrame, tiradas: int, undersampling:
 
     semillas = _generar_semillas_primas(tiradas, SEMILLA[0])
 
+    logger.info(f"Parametros encontrados: {mejores_params}")
+
     # Realizar 5 entrenamientos con diferentes semillas
     for i, semilla in enumerate(semillas):  # Usar las primeras 5 semillas
-        logger.info(f"Entrenando con semilla {semilla} ({i+1}/5)")
+        logger.info(f"Entrenando con semilla {semilla} ({i+1}/{tiradas})")
         
         # Obtener predicciones para esta semilla
         ganancia_test, y_pred_proba = evaluar_en_test(
-            df,
-            mejores_params,
+            df=df,
+            mejores_params=mejores_params,
             undersampling=undersampling,
             semilla=semilla
         )
-        
-        # Calcular ganancia acumulada
+        logger.info(f"Ganancia en test de grafico: {ganancia_test:,.0f}")
+        # Calcular ganancia acumulada usando el retorno de evaluar_en_test
+        # No recalcular, usar directamente ganancia_test
         _, ganancias_acumuladas = calcular_ganancia(y_pred=y_pred_proba, y_true=y_true)
         
         # Encontrar la ganancia máxima y su índice
