@@ -9,6 +9,7 @@ from src.loader import cargar_datos, convertir_clase_ternaria_a_target
 from src.features import feature_engineering_lag, feature_engineering_delta_lag
 from src.optimization_BO import optimizar
 from src.optimization_ZS import optimizar_zero_shot
+from src.optimization_RL import optimizar_rfppo_hpo
 
 from src.best_params import cargar_mejores_hiperparametros
 
@@ -181,10 +182,14 @@ def main():
     with mlflow.start_run(run_name=f"experimento-{STUDY_NAME}"):
         mlflow.set_tags(MLFLOW_TAGS)
 
+        """
         mlflow.log_param("undersampling_ratio_BO", 0.5)
         mlflow.log_param("n_trials_BO", 50)
         mlflow.log_param("Dimenciones_data", df_fe.shape)
-
+        mlflow.log_param("undersampling_ratio_RFPPO", 0.5)
+        mlflow.log_param("episodes_RFPPO", 200)
+        mlflow.log_param("initial_real_episodes_RFPPO", 100)
+        mlflow.log_param("kl_threshold_RFPPO", 0.1)
         #03 Ejecutar optimizacion de hiperparametros
         study = optimizar(df_fe, n_trials=50, undersampling=0.5)
         mlflow.log_param("n_trials_executed", len(study.trials))
@@ -240,8 +245,39 @@ def main():
         #04 Sin Optimizacion con el uso de ZeroShot
         #05 Test en mes desconocido - Usando hiperparámetros de ZeroShot
         params_lightgbm = _optimizacion_zs(df_fe)
+        """
+
+        logger.info("====OPTIMIZACION POR RL====")
+
+        mlflow.log_param("undersampling_ratio_RL", 0.5)
+
+        optimizar_rfppo_hpo(df_fe, undersampling=0.5, episodes=200, initial_real_episodes=100, kl_threshold=0.1)
         
+        logger.info("=== EVALUACIÓN EN CONJUNTO DE TEST ===")
+        logger.info("Usando hiperparámetros encontrados en RL")
+        archivo_RL = os.path.join("resultados", f"{STUDY_NAME}_iteraciones.json")
+        mejores_params = cargar_mejores_hiperparametros(archivo_json=archivo_RL)
+            
+        ganancia_test, _ = evaluar_en_test(df=df_fe, mejores_params=mejores_params, undersampling=1)
+        mlflow.log_metric("ganancia_test_RL", ganancia_test) # loggear la ganancia en mlflow
+        logger.info(f"✅ Ganancia en test RL: {ganancia_test:,.0f}")
         
+
+
+        # Guardar resultados de test
+        resultados_path = guardar_resultados_test(ganancia_test)
+        mlflow.log_artifact(resultados_path) # sube el archivo a mlflow como artifacto .json
+
+        # Resumen de evaluación en test
+        logger.info("=== RESUMEN DE EVALUACIÓN EN TEST ===")
+        logger.info(f"✅ Ganancia en test: {ganancia_test:,.0f}")
+
+        logger.info("=== GRAFICO DE TEST ===")
+        ruta_grafico = generar_grafico_test_completo(df=df_fe, mejores_params=mejores_params, tiradas=20, undersampling=1)
+        logger.info(f"✅ Gráfico generado: {ruta_grafico}")
+        mlflow.log_artifact(ruta_grafico) # sube el archivo a mlflow como artifacto .png
+
+        logger.info("=== EVALUACIÓN EN CONJUNTO DE TEST COMPLETADA ===")
 
   
 

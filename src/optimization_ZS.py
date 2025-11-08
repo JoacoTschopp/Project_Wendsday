@@ -238,7 +238,17 @@ def optimizar_zero_shot(
 ) -> Dict[str, Any]:
     if archivo_base is None:
         archivo_base = STUDY_NAME
-
+    """
+    Descripción:
+    Optimiza los hiperparámetros de un modelo LightGBM usando FLAML para un problema de clasificación binaria.
+    
+    Args:
+        df: DataFrame con todos los datos
+        feature_subset: Subconjunto de características a usar (opcional)
+        archivo_base: Nombre base del archivo (si es None, usa el de config.yaml)
+    Returns:
+        Dict[str, Any]: Diccionario con los mejores parámetros encontrados
+    """
     X_train, y_train, X_val, y_val = preparar_datos_zero_shot(df, feature_subset)
 
     (
