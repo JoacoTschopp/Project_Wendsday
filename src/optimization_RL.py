@@ -26,6 +26,7 @@ import pickle
 import random
 import copy
 import logging
+import json
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Tuple, Optional, Any
 
@@ -36,12 +37,14 @@ from sklearn.ensemble import RandomForestRegressor
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from datetime import datetime
 
 from .config import (
     PARAMETROS_LGB,
     MES_TRAIN,
     MES_VALIDACION,
     SEMILLA,
+    STUDY_NAME,
 )
 from .gain_function import calcular_ganancia, ganancia_evaluator
 from .loader import convertir_clase_ternaria_a_target
@@ -188,10 +191,11 @@ class RFEPPOHPO:
         space: List[ParamDef],
         episodes: int = 200,
         initial_real_episodes: int = 100,
-        kl_threshold: float = 0.1,
+        kl_threshold: float = 0.05,
         ppo_cfg: PPOConfig | None = None,
         seed: int = 42,
         device: str | None = None,
+        archivo_base: Optional[str] = None,
     ):
         self.space = space
         self.dim = len(space)
@@ -203,6 +207,7 @@ class RFEPPOHPO:
         torch.manual_seed(seed)
         random.seed(seed)
         self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+        self.archivo_base = archivo_base or STUDY_NAME
 
         self.actor = PPOActorCritic(self.dim).to(self.device)
         self.actor_old = copy.deepcopy(self.actor).to(self.device)  # reference policy π
@@ -222,6 +227,7 @@ class RFEPPOHPO:
         self.best_reward = -float("inf")
         self.best_params: Dict[str, Any] = {}
         self.episode_done = 0
+        self.history: List[Dict[str, Any]] = []
 
     # --------- utils: mapping actions <-> params
     def _actions_to_params(self, actions_unit: List[float]) -> Dict[str, Any]:
@@ -487,13 +493,35 @@ class RFEPPOHPO:
                     ).unsqueeze(0)
                     idxs_t = torch.tensor(np.array(idxs)[None, :], dtype=torch.long, device=device)
                     kl = self._estimate_policy_kl(prev_mu_sigmas, idxs_t)
+                    logger.info(
+                        "RFEPPO - episodio %d KL=%.4f (umbral=%.3f)",
+                        ep,
+                        kl,
+                        self.kl_threshold,
+                    )
                     use_surrogate = (self.rf is not None) and (kl <= self.kl_threshold)
 
             rT, params = self._rollout_and_update(evaluate_fn, use_surrogate)
 
+            eval_source = "surrogate RF" if use_surrogate else "evaluación real"
+            logger.info("RFEPPO - episodio %d reward=%.0f (%s)", ep, rT, eval_source)
+
+            self.history.append({
+                "episode": ep,
+                "params": params.copy(),
+                "reward": float(rT),
+                "use_surrogate": bool(use_surrogate),
+                "datetime": datetime.now().isoformat(),
+            })
+
             if rT > self.best_reward:
+                prev_best = self.best_reward
                 self.best_reward = rT
-                self.best_params = params
+                self.best_params = params.copy()
+                if math.isfinite(prev_best):
+                    logger.info("RFEPPO - mejora PPO episodio %d: reward %.0f (anterior %.0f)", ep, rT, prev_best)
+                else:
+                    logger.info("RFEPPO - primera recompensa PPO episodio %d: reward %.0f", ep, rT)
 
 
             # Train/update surrogate after initial_real_episodes, whenever we have new real data
@@ -503,6 +531,7 @@ class RFEPPOHPO:
                     self.rf.fit(np.array(self.D_X), np.array(self.D_y))
                     # Save current policy as reference π
                     self.actor_old = copy.deepcopy(self.actor).to(self.device).eval()
+                    logger.info("RFEPPO - surrogate RF actualizado con %d evaluaciones reales", len(self.D_X))
 
 
             # update episode counter, checkpoint if requested
@@ -514,6 +543,14 @@ class RFEPPOHPO:
         # final checkpoint
         if checkpoint_path:
             self.save_checkpoint(checkpoint_path)
+
+        if self.history:
+            _persistir_resultados_rl(
+                archivo_base=self.archivo_base,
+                history=self.history,
+                best_params=self.best_params,
+                best_reward=self.best_reward,
+            )
 
         return self.best_params, float(self.best_reward)
 
@@ -546,13 +583,27 @@ class RFEPPOHPO:
                     idxs_t = torch.tensor(np.array(idxs)[None, :], dtype=torch.long, device=device)
 
                 kl = self._estimate_policy_kl(prev_mu_sigmas, idxs_t)
+                logger.info(
+                    "RFEPPO - episodio %d KL=%.4f (umbral=%.3f)",
+                    ep,
+                    kl,
+                    self.kl_threshold,
+                )
                 use_surrogate = (self.rf is not None) and (kl <= self.kl_threshold)
 
             rT, params = self._rollout_and_update(evaluate_fn, use_surrogate)
 
+            self.history.append({
+                "episode": ep,
+                "params": params.copy(),
+                "reward": float(rT),
+                "use_surrogate": bool(use_surrogate),
+                "datetime": datetime.now().isoformat(),
+            })
+
             if rT > self.best_reward:
                 self.best_reward = rT
-                self.best_params = params
+                self.best_params = params.copy()
 
             # Train/update surrogate after initial_real_episodes, whenever we have new real data
             if ep == self.initial_real_episodes or (ep > self.initial_real_episodes and (not use_surrogate)):
@@ -562,7 +613,96 @@ class RFEPPOHPO:
                     # Save current policy as reference π
                     self.actor_old = copy.deepcopy(self.actor).to(self.device).eval()
 
+        if self.history:
+            _persistir_resultados_rl(
+                archivo_base=self.archivo_base,
+                history=self.history,
+                best_params=self.best_params,
+                best_reward=self.best_reward,
+                episodes=self.episodes,
+                initial_real_episodes=self.initial_real_episodes,
+                kl_threshold=self.kl_threshold,
+            )
+
         return self.best_params, float(self.best_reward)
+
+
+# ----------------------------
+# Persistencia de resultados RFEPPO
+# ----------------------------
+def _persistir_resultados_rl(
+    archivo_base: str,
+    history: List[Dict[str, Any]],
+    best_params: Dict[str, Any],
+    best_reward: float,
+    episodes: int,
+    initial_real_episodes: int,
+    kl_threshold: float,
+) -> Dict[str, str]:
+    os.makedirs("resultados", exist_ok=True)
+
+    iter_path_base = os.path.join("resultados", f"{archivo_base}_iteraciones.json")
+    best_path_base = os.path.join("resultados", f"{archivo_base}_best_params.json")
+    iter_path_rl = os.path.join("resultados", f"{archivo_base}_rl_iteraciones.json")
+    best_path_rl = os.path.join("resultados", f"{archivo_base}_rl_best_params.json")
+
+    def _cargar_lista(path: str) -> List[Dict[str, Any]]:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    contenido = json.load(f)
+                if isinstance(contenido, list):
+                    return contenido
+            except json.JSONDecodeError:
+                pass
+        return []
+
+    contenido_base = _cargar_lista(iter_path_base)
+    contenido_rl = _cargar_lista(iter_path_rl)
+
+    trial_number = len(contenido_base)
+
+    configuracion = {
+        "semilla": SEMILLA if isinstance(SEMILLA, list) else [SEMILLA],
+        "mes_train": MES_TRAIN if isinstance(MES_TRAIN, list) else [MES_TRAIN],
+        "episodes": episodes,
+        "initial_real_episodes": initial_real_episodes,
+        "kl_threshold": kl_threshold,
+    }
+
+    registro = {
+        "trial_number": trial_number,
+        "params": best_params,
+        "value": float(best_reward),
+        "datetime": datetime.now().isoformat(),
+        "state": "COMPLETE",
+        "configuracion": configuracion,
+        "history": history,
+    }
+
+    contenido_base.append(registro)
+    contenido_rl.append(registro)
+
+    with open(iter_path_base, "w", encoding="utf-8") as f:
+        json.dump(contenido_base, f, indent=2)
+
+    with open(iter_path_rl, "w", encoding="utf-8") as f:
+        json.dump(contenido_rl, f, indent=2)
+
+    resumen_best = {
+        "best_params": best_params,
+        "best_reward": float(best_reward),
+        "configuracion": configuracion,
+        "history_len": len(history),
+    }
+
+    with open(best_path_base, "w", encoding="utf-8") as f:
+        json.dump(resumen_best, f, indent=2)
+
+    with open(best_path_rl, "w", encoding="utf-8") as f:
+        json.dump(resumen_best, f, indent=2)
+
+    return {"iteraciones": iter_path_base, "best_params": best_path_base}
 
 
 # ----------------------------
@@ -597,6 +737,17 @@ def default_lgbm_space() -> List[ParamDef]:
 
     return space
 
+def _preparar_datos_entrenamiento(df: pd.DataFrame) -> pd.DataFrame:
+    """Prepara datos combinando TRAIN + VALIDACIÓN para CV."""
+    if isinstance(MES_TRAIN, list):
+        periodos_entrenamiento = MES_TRAIN + [MES_VALIDACION]
+    else:
+        periodos_entrenamiento = [MES_TRAIN, MES_VALIDACION]
+
+    df_train = df[df["foto_mes"].isin(periodos_entrenamiento)].copy()
+    df_train = convertir_clase_ternaria_a_target(df_train, baja_2_1=True)
+    df_train["clase_ternaria"] = df_train["clase_ternaria"].astype(np.int8)
+    return df_train
 
 # ----------------------------
 # RFEPPO optimization helper
@@ -633,20 +784,14 @@ def optimizar_rfppo_hpo(
         MES_VALIDACION,
     )
 
-    df_train = df[df["foto_mes"].isin(train_periods)].copy()
-    df_val = df[df["foto_mes"] == MES_VALIDACION].copy()
-
-    if df_train.empty or df_val.empty:
+    df_train = _preparar_datos_entrenamiento(df)
+    
+    if df_train.empty:
         raise ValueError(
             "Los períodos configurados no generan datos suficientes para entrenamiento/validación."
         )
 
-    df_train = convertir_clase_ternaria_a_target(df_train, baja_2_1=True)
-    df_val = convertir_clase_ternaria_a_target(df_val, baja_2_1=False)
-
-    df_train["clase_ternaria"] = df_train["clase_ternaria"].astype(np.int8)
-    df_val["clase_ternaria"] = df_val["clase_ternaria"].astype(np.int8)
-
+    
     if undersampling < 1.0:
         logger.info("RFEPPO - aplicando undersampling (ratio=%.3f)", undersampling)
         base_seed = SEMILLA[0] if isinstance(SEMILLA, list) else int(SEMILLA)
@@ -656,10 +801,6 @@ def optimizar_rfppo_hpo(
     X_train = df_train[feature_columns].astype(np.float32)
     y_train = df_train["clase_ternaria"].to_numpy(dtype=np.int32)
 
-    # Asegurar mismas columnas ordenadas en validación
-    X_val = df_val[feature_columns].astype(np.float32)
-    y_val = df_val["clase_ternaria"].to_numpy(dtype=np.int32)
-
     space = default_lgbm_space()
 
     fixed_params = {
@@ -667,7 +808,6 @@ def optimizar_rfppo_hpo(
         "metric": PARAMETROS_LGB.get("metric", "None"),
         "min_gain_to_split": PARAMETROS_LGB.get("min_gain_to_split", 0.0),
         "verbosity": PARAMETROS_LGB.get("verbosity", -1),
-        "max_bin": PARAMETROS_LGB.get("max_bin", 255),
         "feature_pre_filter": False,
         "force_col_wise": True,
     }
@@ -682,22 +822,33 @@ def optimizar_rfppo_hpo(
 
         num_boost_round = int(params_train.pop("num_iterations", 3000))
 
-        train_data = lgb.Dataset(X_train, label=y_train, free_raw_data=False)
-        valid_data = lgb.Dataset(X_val, label=y_val, free_raw_data=False)
+        dataset = lgb.Dataset(X_train, label=y_train, free_raw_data=False)
 
-        model = lgb.train(
+        cv_results = lgb.cv(
             params_train,
-            train_data,
+            dataset,
             num_boost_round=num_boost_round,
-            valid_sets=[valid_data],
+            nfold=5,
+            stratified=True,
             feval=ganancia_evaluator,
-            callbacks=[lgb.log_evaluation(0), lgb.early_stopping_rounds(300)],
+            callbacks=[lgb.log_evaluation(0), lgb.early_stopping(300)],
+            seed=base_seed,
         )
 
-        best_iter = model.best_iteration or num_boost_round
-        y_pred_val = model.predict(X_val, num_iteration=best_iter)
-        ganancia_val, _ = calcular_ganancia(y_true=y_val, y_pred=y_pred_val)
-        return float(ganancia_val)
+        metric_candidates = [k for k in cv_results.keys() if k.endswith('-mean')]
+        if not metric_candidates:
+            logger.warning("RFEPPO - lgb.cv no devolvió métricas '-mean'. Keys: %s", list(cv_results.keys()))
+            return 0.0
+
+        metric_name = metric_candidates[0]
+        ganancias_mean = np.array(cv_results[metric_name])
+        best_iter = int(np.argmax(ganancias_mean)) + 1
+        ganancia_best = float(ganancias_mean[best_iter - 1])
+        logger.info("RFEPPO - mejor ganancia VALID=%s", f"{ganancia_best:,.0f}")
+        logger.info("RFEPPO - mejor iteracion VALID=%s", best_iter)
+        logger.info("RFEPPO - mejor params VALID=%s", params_train)
+        
+        return ganancia_best
 
     optimizer = RFEPPOHPO(
         space=space,
@@ -705,6 +856,7 @@ def optimizar_rfppo_hpo(
         initial_real_episodes=initial_real_episodes,
         kl_threshold=kl_threshold,
         seed=base_seed,
+        archivo_base=STUDY_NAME,
     )
 
     best_params_candidate, best_reward = optimizer.search(_evaluate)
@@ -712,7 +864,7 @@ def optimizar_rfppo_hpo(
     best_params["seed"] = base_seed
 
     if "num_iterations" not in best_params:
-        best_params["num_iterations"] = int(PARAMETROS_LGB.get("num_iterations", [300, 300])[1])
+        best_params["num_iterations"] = int(PARAMETROS_LGB.get("num_iterations", [100, 3000])[1])
 
     logger.info(
         "RFEPPO - mejor ganancia VALID=%s",

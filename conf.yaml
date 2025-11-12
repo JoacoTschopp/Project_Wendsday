@@ -1,7 +1,7 @@
-STUDY_NAME : "Experimento_v6rl"
+STUDY_NAME : "Experimento_v6.1rl"
 
-#BUCKET_NAME: "C:\\Users\\tschoppj\\proyectos_maestria\\TSCHOPP-PROJECT\\Compe_02"
-BUCKET_NAME: "/users/joaquintschopp/TSCHOPP-PROJECT/Compe_02"
+BUCKET_NAME: "C:\\Users\\tschoppj\\proyectos_maestria\\TSCHOPP-PROJECT\\Compe_02"
+#BUCKET_NAME: "/users/joaquintschopp/TSCHOPP-PROJECT/Compe_02"
 
 competencia01:
     DATA_PATH: "./data/competencia.csv"
@@ -30,6 +30,27 @@ mlflow:
   ARTIFACT_PATH: "./mlruns"
 
 parametros_lgb:
+    n_trail: 50
+    # Parámetros a optimizar (rangos [min, max])
+    num_leaves: [10, 300]
+    learning_rate: [0.001, 0.5]
+    feature_fraction: [0.4, 1.0]
+    bagging_fraction: [0.4, 1.0]
+    min_child_samples: [5, 1000]
+    max_depth: [3, 50]
+    reg_alpha: [0.0, 10.0]
+    reg_lambda: [0.0, 10.0]
+    min_data_in_leaf: [1, 1000]
+    num_iterations: [100, 3000]
+    bagging_freq: [1, 10]
+    # Parámetros fijos (valor único)
+    objective: "binary"
+    metric: "None"
+    min_gain_to_split: 0.0
+    verbosity: -1
+    max_bin: [10,155]
+
+parametros_lgb_BO:
     n_trail: 50
     # Parámetros a optimizar (rangos [min, max])
     num_leaves: [10, 300]
