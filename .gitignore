@@ -4,4 +4,13 @@ data/
 .env
 
 data/competencia.csv
+data/competencia_02.csv
+data/competencia_02_crudo.csv.gz
 
+resultados/
+logs/
+predict/
+mlruns/
+image/
+
+src/OLD_no_usar/

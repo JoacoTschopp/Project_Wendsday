@@ -1,3 +1,0 @@
-﻿2025-10-09 07:40:42,232 - INFO - __main__ 39 - Inicio de ejecucion.
-2025-10-09 07:40:42,232 - INFO - src.loader 9 - Cargando dataset desde ./data/competencia.csv
-2025-10-09 07:40:48,042 - INFO - __name__ 26 - Realizando feature engineering con 2 lags para 3 atributos
