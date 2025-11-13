@@ -8,9 +8,9 @@ import numpy as np
 import pandas as pd
 from flaml.default import preprocess_and_suggest_hyperparams
 
-from .config import *
-from .loader import convertir_clase_ternaria_a_target
+from .config import MES_TRAIN, MES_VALIDACION, SEMILLA, STUDY_NAME
 from .gain_function import calcular_ganancia
+from .loader import convertir_clase_ternaria_a_target
 
 logger = logging.getLogger(__name__)
 
@@ -62,11 +62,11 @@ def _calcular_ganancia_desde_probabilidades(
 ) -> Tuple[float, float]:
     """
     Calcula ganancia máxima y umbral sugerido usando la función centralizada.
-    
+
     Args:
         y_true: Valores reales (0 o 1)
         y_pred: Predicciones (probabilidades)
-    
+
     Returns:
         Tuple[float, float]: (ganancia_maxima, umbral_sugerido)
     """
@@ -74,8 +74,10 @@ def _calcular_ganancia_desde_probabilidades(
         y_pred = y_pred[:, 1]
 
     # Usar función centralizada para calcular ganancia
-    ganancia_maxima, ganancias_acumuladas = calcular_ganancia(y_pred=y_pred, y_true=y_true)
-    
+    ganancia_maxima, ganancias_acumuladas = calcular_ganancia(
+        y_pred=y_pred, y_true=y_true
+    )
+
     # Calcular umbral sugerido
     if ganancias_acumuladas.size > 0:
         # Ordenar predicciones de mayor a menor
@@ -135,7 +137,12 @@ def _sugerir_y_entrenar_con_flaml(
     else:
         y_val_transformed = y_val
 
-    return hyperparams, modelo.get_params(), np.asarray(proba_val), np.asarray(y_val_transformed)
+    return (
+        hyperparams,
+        modelo.get_params(),
+        np.asarray(proba_val),
+        np.asarray(y_val_transformed),
+    )
 
 
 def _construir_parametros_lightgbm(
@@ -170,7 +177,13 @@ def _construir_parametros_lightgbm(
         resultado["feature_fraction"] = combinados["colsample_bytree"]
 
     # Remover llaves no soportadas por LightGBM nativo
-    for clave in ["n_estimators", "subsample", "colsample_bytree", "n_jobs", "random_state"]:
+    for clave in [
+        "n_estimators",
+        "subsample",
+        "colsample_bytree",
+        "n_jobs",
+        "random_state",
+    ]:
         resultado.pop(clave, None)
 
     return resultado
@@ -226,7 +239,11 @@ def _persistir_resultados(
         json.dump(contenido_existente, f, indent=2)
 
     with open(best_path, "w", encoding="utf-8") as f:
-        json.dump({"params_lightgbm": params_lightgbm, "params_flaml": params_flaml}, f, indent=2)
+        json.dump(
+            {"params_lightgbm": params_lightgbm, "params_flaml": params_flaml},
+            f,
+            indent=2,
+        )
 
     return {"iteraciones": iter_path, "best_params": best_path}
 
@@ -241,7 +258,7 @@ def optimizar_zero_shot(
     """
     Descripción:
     Optimiza los hiperparámetros de un modelo LightGBM usando FLAML para un problema de clasificación binaria.
-    
+
     Args:
         df: DataFrame con todos los datos
         feature_subset: Subconjunto de características a usar (opcional)

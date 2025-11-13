@@ -37,15 +37,14 @@ def aplicar_undersampling(
     df_pl = pl.from_pandas(df)
 
     majority_clients = (
-        df_pl
-        .filter(pl.col("clase_ternaria") == 0)
-        .select("numero_de_cliente")
-        .unique()
+        df_pl.filter(pl.col("clase_ternaria") == 0).select("numero_de_cliente").unique()
     )
     minority_df = df_pl.filter(pl.col("clase_ternaria") == 1)
 
     if majority_clients.height == 0 or minority_df.height == 0:
-        logger.warning("No se puede aplicar undersampling: una de las clases está vacía")
+        logger.warning(
+            "No se puede aplicar undersampling: una de las clases está vacía"
+        )
         return df
 
     sample_size = max(1, int(majority_clients.height * ratio))
@@ -58,10 +57,8 @@ def aplicar_undersampling(
         seed=random_state,
     )
 
-    majority_sampled = (
-        df_pl
-        .filter(pl.col("clase_ternaria") == 0)
-        .join(sampled_clients, on="numero_de_cliente", how="inner")
+    majority_sampled = df_pl.filter(pl.col("clase_ternaria") == 0).join(
+        sampled_clients, on="numero_de_cliente", how="inner"
     )
 
     combined = pl.concat([majority_sampled, minority_df], how="vertical")

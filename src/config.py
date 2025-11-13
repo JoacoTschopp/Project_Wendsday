@@ -1,10 +1,11 @@
-import yaml
-import os
 import logging
+import os
+
+import yaml  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 
-#Ruta del archivo de configuracion
+# Ruta del archivo de configuracion
 PATH_CONFIG = os.path.join(os.path.dirname(os.path.dirname(__file__)), "conf.yaml")
 
 try:
@@ -26,7 +27,6 @@ try:
         FINAL_PREDIC = _cfg.get("FINAL_PREDIC", "")
         MIN_DATA_IN_LEAF = _cfg.get("MIN_DATA_IN_LEAF", None)
         NUM_ITERATIONS = _cfg.get("NUM_ITERATIONS", None)
-
 
 
 except Exception as e:
@@ -51,25 +51,25 @@ try:
         MLFLOW_TRACKING_URI = f"file://{_default_artifact_dir}"
 
     # Configuración directa sin plantillas
-    #MLFLOW_EXPERIMENT_NAME = f"DMEyF-{STUDY_NAME}"
+    # MLFLOW_EXPERIMENT_NAME = f"DMEyF-{STUDY_NAME}"
     MLFLOW_EXPERIMENT_NAME = "DMEyF-Tschopp"
     MLFLOW_ARTIFACT_PATH = _default_artifact_dir
     MLFLOW_REGISTERED_MODEL_NAME = f"dmeyf-{STUDY_NAME}"
-  
+
     # Tags fijos
     MLFLOW_TAGS = {
         "proyecto": "DMEyF-Competencia02",
         "equipo": "python",
         "user_name": "tschoppj",
         "comision": "Lunes",
-        "version_dataset": "1.0"
+        "version_dataset": "1.0",
     }
-  
+
     # Crear directorio de artefactos si no existe
     os.makedirs(MLFLOW_ARTIFACT_PATH, exist_ok=True)
-  
+
     logger.info(f"Configuración de MLflow cargada - URI: {MLFLOW_TRACKING_URI}")
-  
+
 except Exception as e:
     logger.error(f"Error al cargar configuración de MLflow: {e}")
     raise

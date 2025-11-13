@@ -18,38 +18,32 @@ Notes:
     * KL threshold logic follows Ma et al. (2022): if the policy drift is small, use RF; otherwise use the real evaluator.
 
 """
+
 from __future__ import annotations
 
+import copy
+import json
+import logging
 import math
 import os
 import pickle
 import random
-import copy
-import logging
-import json
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Tuple, Optional, Any
+from datetime import datetime
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from datetime import datetime
+from sklearn.ensemble import RandomForestRegressor
 
-from .config import (
-    PARAMETROS_LGB,
-    MES_TRAIN,
-    MES_VALIDACION,
-    SEMILLA,
-    STUDY_NAME,
-)
-from .gain_function import calcular_ganancia, ganancia_evaluator
+from .config import MES_TRAIN, MES_VALIDACION, PARAMETROS_LGB, SEMILLA, STUDY_NAME
+from .gain_function import ganancia_evaluator
 from .loader import convertir_clase_ternaria_a_target
 from .undersampling import aplicar_undersampling
-
 
 # -----------------------------------------------------------------------------
 # Logging
@@ -111,13 +105,16 @@ class PPOActorCritic(nn.Module):
     at each step (we choose one hyperparameter per step). Which hyperparameter is
     being chosen is indicated via a learned embedding of the step index.
     """
+
     def __init__(self, num_params: int, hidden_size: int = 128, idx_emb_dim: int = 32):
         super().__init__()
         self.num_params = num_params
         self.idx_emb = nn.Embedding(num_params, idx_emb_dim)
         # State = previous output stats [mu, sigma] (2-dim) + idx embedding
         self.input_size = 2 + idx_emb_dim
-        self.lstm = nn.LSTM(self.input_size, hidden_size, num_layers=1, batch_first=True)
+        self.lstm = nn.LSTM(
+            self.input_size, hidden_size, num_layers=1, batch_first=True
+        )
         self.actor_mu = nn.Linear(hidden_size, 1)
         self.actor_logstd = nn.Linear(hidden_size, 1)
         self.critic = nn.Linear(hidden_size, 1)
@@ -135,7 +132,9 @@ class PPOActorCritic(nn.Module):
         return mu.squeeze(-1), logstd.squeeze(-1), value.squeeze(-1), (h, c)
 
     @staticmethod
-    def gaussian_log_prob(mu: torch.Tensor, logstd: torch.Tensor, action: torch.Tensor) -> torch.Tensor:
+    def gaussian_log_prob(
+        mu: torch.Tensor, logstd: torch.Tensor, action: torch.Tensor
+    ) -> torch.Tensor:
         # action, mu, logstd: same shape
         var = torch.exp(2 * logstd)
         return -0.5 * (math.log(2 * math.pi) + 2 * logstd + (action - mu) ** 2 / var)
@@ -150,15 +149,14 @@ class PPOActorCritic(nn.Module):
 
 class ForwardModel(nn.Module):
     """Curiosity forward model Φ(s_t), predicts Φ(s_{t+1}) given (Φ(s_t), a_t)."""
+
     def __init__(self, state_dim: int = 16):
         super().__init__()
         self.encoder = nn.Sequential(
-            nn.Linear(2, 32), nn.ReLU(),
-            nn.Linear(32, state_dim)
+            nn.Linear(2, 32), nn.ReLU(), nn.Linear(32, state_dim)
         )
         self.forward_net = nn.Sequential(
-            nn.Linear(state_dim + 1, 64), nn.ReLU(),
-            nn.Linear(64, state_dim)
+            nn.Linear(state_dim + 1, 64), nn.ReLU(), nn.Linear(64, state_dim)
         )
 
     def embed_state(self, mu_sigma: torch.Tensor) -> torch.Tensor:
@@ -206,7 +204,9 @@ class RFEPPOHPO:
         self.rng = np.random.default_rng(seed)
         torch.manual_seed(seed)
         random.seed(seed)
-        self.device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
+        self.device = torch.device(
+            device or ("cuda" if torch.cuda.is_available() else "cpu")
+        )
         self.archivo_base = archivo_base or STUDY_NAME
 
         self.actor = PPOActorCritic(self.dim).to(self.device)
@@ -216,7 +216,9 @@ class RFEPPOHPO:
             [p for n, p in self.actor.named_parameters() if not n.startswith("critic")],
             lr=self.ppo_cfg.actor_lr,
         )
-        self.opt_critic = optim.Adam(self.actor.critic.parameters(), lr=self.ppo_cfg.critic_lr)
+        self.opt_critic = optim.Adam(
+            self.actor.critic.parameters(), lr=self.ppo_cfg.critic_lr
+        )
         self.opt_fm = optim.Adam(self.fm.parameters(), lr=self.ppo_cfg.fm_lr)
 
         # Surrogate model data (normalized [0,1] vectors -> reward)
@@ -252,8 +254,11 @@ class RFEPPOHPO:
         return torch.sigmoid(z)
 
     # --------- KL between current policy and saved reference π (episode-level)
-    def _estimate_policy_kl(self, prev_mu_sigmas: torch.Tensor, idxs: torch.Tensor) -> float:
-        self.actor.eval(); self.actor_old.eval()
+    def _estimate_policy_kl(
+        self, prev_mu_sigmas: torch.Tensor, idxs: torch.Tensor
+    ) -> float:
+        self.actor.eval()
+        self.actor_old.eval()
         with torch.no_grad():
             mu, logstd, _, _ = self.actor(prev_mu_sigmas, idxs)
             mu0, logstd0, _, _ = self.actor_old(prev_mu_sigmas, idxs)
@@ -263,17 +268,20 @@ class RFEPPOHPO:
         return float(kl_mean)
 
     # --------- One full episode rollout + PPO update
-    def _rollout_and_update(self, evaluate_fn: Callable[[Dict[str, Any]], float], use_surrogate: bool) -> Tuple[float, Dict[str, Any]]:
-        self.actor.train(); self.fm.train()
+    def _rollout_and_update(
+        self, evaluate_fn: Callable[[Dict[str, Any]], float], use_surrogate: bool
+    ) -> Tuple[float, Dict[str, Any]]:
+        self.actor.train()
+        self.fm.train()
         device = self.device
         T = self.dim
         # containers
-        states_prev = []      # [T, 2]
-        idxs = []             # [T]
-        actions = []          # [T, 1]
-        logps = []            # [T]
-        values = []           # [T]
-        rewards = []          # [T] (intrinsic for steps 0..T-2, intrinsic+env at T-1)
+        states_prev = []  # [T, 2]
+        idxs = []  # [T]
+        actions = []  # [T, 1]
+        logps = []  # [T]
+        values = []  # [T]
+        rewards = []  # [T] (intrinsic for steps 0..T-2, intrinsic+env at T-1)
 
         # initial previous output distribution (standard normal)
         prev = torch.zeros(1, 1, 2, device=device)  # [B=1, t=1, 2]
@@ -295,9 +303,11 @@ class RFEPPOHPO:
             # log prob under Gaussian BEFORE squash (treat as reparam; we still use this approx)
             logp = PPOActorCritic.gaussian_log_prob(dist_mu, dist_logstd, a)
 
-            # curiosity: compute intrinsic reward r_i = MSE(Φ(s_{t+1}) - 
+            # curiosity: compute intrinsic reward r_i = MSE(Φ(s_{t+1}) -
             #  forward(Φ(s_t), a_t)) after we form next state (which uses current mu/logstd)
-            mu_sigma = torch.stack([dist_mu.detach(), torch.exp(dist_logstd.detach())], dim=-1)  # [2]
+            mu_sigma = torch.stack(
+                [dist_mu.detach(), torch.exp(dist_logstd.detach())], dim=-1
+            )  # [2]
             states_prev.append(mu_sigma.cpu().numpy())
             idxs.append(t)
             actions.append(a.detach().cpu().numpy())
@@ -325,21 +335,35 @@ class RFEPPOHPO:
         # Compute intrinsic rewards using forward model (requires Φ(s_t), Φ(s_{t+1}))
         # Recompute the forward pass to get embeddings for curiosity
         with torch.no_grad():
-            states_prev_t = torch.tensor(np.stack(states_prev, axis=0), dtype=torch.float32, device=device)  # [T,2]
+            states_prev_t = torch.tensor(
+                np.stack(states_prev, axis=0), dtype=torch.float32, device=device
+            )  # [T,2]
         phi = self.fm.embed_state(states_prev_t)  # [T,state_dim]
         # For actions, we reuse the sampled a values (pre-sigmoid), shape [T]
-        a_tensor = torch.tensor(np.array(actions).reshape(-1, 1), dtype=torch.float32, device=device)
+        a_tensor = torch.tensor(
+            np.array(actions).reshape(-1, 1), dtype=torch.float32, device=device
+        )
         phi_pred_next = self.fm(phi[:-1], a_tensor[:-1])  # predict for steps 0..T-2
         phi_true_next = phi[1:]
-        intrinsic = torch.mean((phi_pred_next - phi_true_next).pow(2), dim=-1).detach().cpu().numpy()  # [T-1]
+        intrinsic = (
+            torch.mean((phi_pred_next - phi_true_next).pow(2), dim=-1)
+            .detach()
+            .cpu()
+            .numpy()
+        )  # [T-1]
 
         # Compose rewards per step
         rewards = list(self.ppo_cfg.beta_intrinsic * intrinsic)
-        rewards.append(self.ppo_cfg.beta_intrinsic * (intrinsic[-1] if len(intrinsic) > 0 else 0.0) + rT)
+        rewards.append(
+            self.ppo_cfg.beta_intrinsic * (intrinsic[-1] if len(intrinsic) > 0 else 0.0)
+            + rT
+        )
 
         # Train forward model on curiosity signal
         fm_loss = nn.functional.mse_loss(phi_pred_next, phi_true_next)
-        self.opt_fm.zero_grad(); fm_loss.backward(); self.opt_fm.step()
+        self.opt_fm.zero_grad()
+        fm_loss.backward()
+        self.opt_fm.step()
 
         # ===== PPO update (on this single-episode trajectory) =====
         # Compute returns/advantages (GAE)
@@ -350,18 +374,28 @@ class RFEPPOHPO:
         adv = np.zeros(Tlen, dtype=np.float32)
         lastgaelam = 0.0
         for t in reversed(range(Tlen)):
-            delta = rewards_t[t] + gamma * values_t[t+1] - values_t[t]
+            delta = rewards_t[t] + gamma * values_t[t + 1] - values_t[t]
             lastgaelam = delta + gamma * lam * lastgaelam
             adv[t] = lastgaelam
         returns = adv + values_t[:-1]
 
         # Pack tensors
-        prev_mu_sigmas = torch.tensor(np.stack(states_prev, axis=0), dtype=torch.float32, device=device).unsqueeze(0)  # [1,T,2]
+        prev_mu_sigmas = torch.tensor(
+            np.stack(states_prev, axis=0), dtype=torch.float32, device=device
+        ).unsqueeze(
+            0
+        )  # [1,T,2]
         idxs_t = torch.tensor(np.array(idxs)[None, :], dtype=torch.long, device=device)
-        actions_t = torch.tensor(np.array(actions).reshape(1, -1), dtype=torch.float32, device=device)
-        old_logps_t = torch.tensor(np.array(logps).reshape(1, -1), dtype=torch.float32, device=device)
+        actions_t = torch.tensor(
+            np.array(actions).reshape(1, -1), dtype=torch.float32, device=device
+        )
+        old_logps_t = torch.tensor(
+            np.array(logps).reshape(1, -1), dtype=torch.float32, device=device
+        )
         adv_t = torch.tensor(adv.reshape(1, -1), dtype=torch.float32, device=device)
-        returns_t = torch.tensor(returns.reshape(1, -1), dtype=torch.float32, device=device)
+        returns_t = torch.tensor(
+            returns.reshape(1, -1), dtype=torch.float32, device=device
+        )
 
         # Multiple epochs PPO
         for _ in range(self.ppo_cfg.epochs):
@@ -369,22 +403,29 @@ class RFEPPOHPO:
             logp = PPOActorCritic.gaussian_log_prob(mu, logstd, actions_t)
             ratio = torch.exp(logp - old_logps_t)
             surr1 = ratio * adv_t
-            surr2 = torch.clamp(ratio, 1.0 - self.ppo_cfg.ppo_clip, 1.0 + self.ppo_cfg.ppo_clip) * adv_t
+            surr2 = (
+                torch.clamp(
+                    ratio, 1.0 - self.ppo_cfg.ppo_clip, 1.0 + self.ppo_cfg.ppo_clip
+                )
+                * adv_t
+            )
             actor_loss = -torch.mean(torch.min(surr1, surr2))
             critic_loss = nn.functional.mse_loss(value_pred, returns_t)
             loss = actor_loss + 0.5 * critic_loss
 
-            self.opt_actor.zero_grad(); self.opt_critic.zero_grad()
+            self.opt_actor.zero_grad()
+            self.opt_critic.zero_grad()
             loss.backward()
             nn.utils.clip_grad_norm_(self.actor.parameters(), 1.0)
-            self.opt_actor.step(); self.opt_critic.step()
+            self.opt_actor.step()
+            self.opt_critic.step()
 
         return rT, params
 
     ###
     #
-    #Solo por las dudas se corte y vuelva a empezarlo utilizaria este
-    #Por ahroa solo usao search()
+    # Solo por las dudas se corte y vuelva a empezarlo utilizaria este
+    # Por ahroa solo usao search()
     #
     ###
 
@@ -436,7 +477,7 @@ class RFEPPOHPO:
         self.actor_old.eval()
         # RNG
         try:
-            random.setstate(state["py_random_state"]) # Python RNG
+            random.setstate(state["py_random_state"])  # Python RNG
         except Exception:
             pass
         try:
@@ -446,7 +487,7 @@ class RFEPPOHPO:
         except Exception:
             pass
         try:
-            torch.set_rng_state(state["torch_rng_state"]) # CPU RNG
+            torch.set_rng_state(state["torch_rng_state"])  # CPU RNG
         except Exception:
             pass
 
@@ -466,7 +507,6 @@ class RFEPPOHPO:
         if start_ep < 1:
             start_ep = 1
 
-
         for ep in range(start_ep, self.episodes + 1):
             # Decide whether to use surrogate based on KL to reference policy
             use_surrogate = False
@@ -483,7 +523,9 @@ class RFEPPOHPO:
                     for t in range(self.dim):
                         step_idx = torch.tensor([[t]], dtype=torch.long, device=device)
                         mu, logstd, _, hx = self.actor(prev, step_idx, hx)
-                        prev = torch.stack([mu.squeeze(0), torch.exp(logstd.squeeze(0))], dim=-1).view(1, 1, 2)
+                        prev = torch.stack(
+                            [mu.squeeze(0), torch.exp(logstd.squeeze(0))], dim=-1
+                        ).view(1, 1, 2)
                         traj_prev.append(prev.squeeze(0).squeeze(0).cpu().numpy())
                         idxs.append(t)
                     prev_mu_sigmas = torch.tensor(
@@ -491,7 +533,9 @@ class RFEPPOHPO:
                         dtype=torch.float32,
                         device=device,
                     ).unsqueeze(0)
-                    idxs_t = torch.tensor(np.array(idxs)[None, :], dtype=torch.long, device=device)
+                    idxs_t = torch.tensor(
+                        np.array(idxs)[None, :], dtype=torch.long, device=device
+                    )
                     kl = self._estimate_policy_kl(prev_mu_sigmas, idxs_t)
                     logger.info(
                         "RFEPPO - episodio %d KL=%.4f (umbral=%.3f)",
@@ -506,39 +550,52 @@ class RFEPPOHPO:
             eval_source = "surrogate RF" if use_surrogate else "evaluación real"
             logger.info("RFEPPO - episodio %d reward=%.0f (%s)", ep, rT, eval_source)
 
-            self.history.append({
-                "episode": ep,
-                "params": params.copy(),
-                "reward": float(rT),
-                "use_surrogate": bool(use_surrogate),
-                "datetime": datetime.now().isoformat(),
-            })
+            self.history.append(
+                {
+                    "episode": ep,
+                    "params": params.copy(),
+                    "reward": float(rT),
+                    "use_surrogate": bool(use_surrogate),
+                    "datetime": datetime.now().isoformat(),
+                }
+            )
 
             if rT > self.best_reward:
                 prev_best = self.best_reward
                 self.best_reward = rT
                 self.best_params = params.copy()
                 if math.isfinite(prev_best):
-                    logger.info("RFEPPO - mejora PPO episodio %d: reward %.0f (anterior %.0f)", ep, rT, prev_best)
+                    logger.info(
+                        "RFEPPO - mejora PPO episodio %d: reward %.0f (anterior %.0f)",
+                        ep,
+                        rT,
+                        prev_best,
+                    )
                 else:
-                    logger.info("RFEPPO - primera recompensa PPO episodio %d: reward %.0f", ep, rT)
-
+                    logger.info(
+                        "RFEPPO - primera recompensa PPO episodio %d: reward %.0f",
+                        ep,
+                        rT,
+                    )
 
             # Train/update surrogate after initial_real_episodes, whenever we have new real data
-            if ep == self.initial_real_episodes or (ep > self.initial_real_episodes and (not use_surrogate)):
+            if ep == self.initial_real_episodes or (
+                ep > self.initial_real_episodes and (not use_surrogate)
+            ):
                 if len(self.D_X) >= 20:
                     self.rf = RandomForestRegressor(n_estimators=150, random_state=0)
                     self.rf.fit(np.array(self.D_X), np.array(self.D_y))
                     # Save current policy as reference π
                     self.actor_old = copy.deepcopy(self.actor).to(self.device).eval()
-                    logger.info("RFEPPO - surrogate RF actualizado con %d evaluaciones reales", len(self.D_X))
-
+                    logger.info(
+                        "RFEPPO - surrogate RF actualizado con %d evaluaciones reales",
+                        len(self.D_X),
+                    )
 
             # update episode counter, checkpoint if requested
             self.episode_done = ep
             if checkpoint_path and (ep % max(1, checkpoint_every) == 0):
                 self.save_checkpoint(checkpoint_path)
-
 
         # final checkpoint
         if checkpoint_path:
@@ -550,13 +607,18 @@ class RFEPPOHPO:
                 history=self.history,
                 best_params=self.best_params,
                 best_reward=self.best_reward,
+                episodes=self.episodes,
+                initial_real_episodes=self.initial_real_episodes,
+                kl_threshold=self.kl_threshold,
             )
 
         return self.best_params, float(self.best_reward)
 
-##########################################################################################################################
+    ##########################################################################################################################
 
-    def search(self, evaluate_fn: Callable[[Dict[str, Any]], float]) -> Tuple[Dict[str, Any], float]:
+    def search(
+        self, evaluate_fn: Callable[[Dict[str, Any]], float]
+    ) -> Tuple[Dict[str, Any], float]:
         """Run RFEPPO search. Returns (best_params, best_reward)."""
         # warmup: real evaluations
         for ep in range(1, self.episodes + 1):
@@ -576,11 +638,17 @@ class RFEPPOHPO:
                     for t in range(self.dim):
                         step_idx = torch.tensor([[t]], dtype=torch.long, device=device)
                         mu, logstd, _, hx = self.actor(prev, step_idx, hx)
-                        prev = torch.stack([mu.squeeze(0), torch.exp(logstd.squeeze(0))], dim=-1).view(1, 1, 2)
+                        prev = torch.stack(
+                            [mu.squeeze(0), torch.exp(logstd.squeeze(0))], dim=-1
+                        ).view(1, 1, 2)
                         traj_prev.append(prev.squeeze(0).squeeze(0).cpu().numpy())
                         idxs.append(t)
-                    prev_mu_sigmas = torch.tensor(np.stack(traj_prev, axis=0), dtype=torch.float32, device=device).unsqueeze(0)
-                    idxs_t = torch.tensor(np.array(idxs)[None, :], dtype=torch.long, device=device)
+                    prev_mu_sigmas = torch.tensor(
+                        np.stack(traj_prev, axis=0), dtype=torch.float32, device=device
+                    ).unsqueeze(0)
+                    idxs_t = torch.tensor(
+                        np.array(idxs)[None, :], dtype=torch.long, device=device
+                    )
 
                 kl = self._estimate_policy_kl(prev_mu_sigmas, idxs_t)
                 logger.info(
@@ -593,20 +661,24 @@ class RFEPPOHPO:
 
             rT, params = self._rollout_and_update(evaluate_fn, use_surrogate)
 
-            self.history.append({
-                "episode": ep,
-                "params": params.copy(),
-                "reward": float(rT),
-                "use_surrogate": bool(use_surrogate),
-                "datetime": datetime.now().isoformat(),
-            })
+            self.history.append(
+                {
+                    "episode": ep,
+                    "params": params.copy(),
+                    "reward": float(rT),
+                    "use_surrogate": bool(use_surrogate),
+                    "datetime": datetime.now().isoformat(),
+                }
+            )
 
             if rT > self.best_reward:
                 self.best_reward = rT
                 self.best_params = params.copy()
 
             # Train/update surrogate after initial_real_episodes, whenever we have new real data
-            if ep == self.initial_real_episodes or (ep > self.initial_real_episodes and (not use_surrogate)):
+            if ep == self.initial_real_episodes or (
+                ep > self.initial_real_episodes and (not use_surrogate)
+            ):
                 if len(self.D_X) >= 20:
                     self.rf = RandomForestRegressor(n_estimators=150, random_state=0)
                     self.rf.fit(np.array(self.D_X), np.array(self.D_y))
@@ -731,11 +803,10 @@ def default_lgbm_space() -> List[ParamDef]:
         if scale in {"log", "log2"} and (low <= 0 or high <= 0):
             scale = "lin"
 
-        space.append(
-            ParamDef(name, ptype, float(low), float(high), scale)
-        )
+        space.append(ParamDef(name, ptype, float(low), float(high), scale))
 
     return space
+
 
 def _preparar_datos_entrenamiento(df: pd.DataFrame) -> pd.DataFrame:
     """Prepara datos combinando TRAIN + VALIDACIÓN para CV."""
@@ -748,6 +819,7 @@ def _preparar_datos_entrenamiento(df: pd.DataFrame) -> pd.DataFrame:
     df_train = convertir_clase_ternaria_a_target(df_train, baja_2_1=True)
     df_train["clase_ternaria"] = df_train["clase_ternaria"].astype(np.int8)
     return df_train
+
 
 # ----------------------------
 # RFEPPO optimization helper
@@ -785,17 +857,18 @@ def optimizar_rfppo_hpo(
     )
 
     df_train = _preparar_datos_entrenamiento(df)
-    
+
     if df_train.empty:
         raise ValueError(
             "Los períodos configurados no generan datos suficientes para entrenamiento/validación."
         )
 
-    
     if undersampling < 1.0:
         logger.info("RFEPPO - aplicando undersampling (ratio=%.3f)", undersampling)
         base_seed = SEMILLA[0] if isinstance(SEMILLA, list) else int(SEMILLA)
-        df_train = aplicar_undersampling(df_train, undersampling, random_state=base_seed)
+        df_train = aplicar_undersampling(
+            df_train, undersampling, random_state=base_seed
+        )
 
     feature_columns = [col for col in df_train.columns if col != "clase_ternaria"]
     X_train = df_train[feature_columns].astype(np.float32)
@@ -818,7 +891,9 @@ def optimizar_rfppo_hpo(
         params_train = {**fixed_params, **params}
         params_train["seed"] = base_seed
         params_train.setdefault("bagging_freq", 0)
-        params_train.setdefault("min_data_in_leaf", params_train.get("min_child_samples", 20))
+        params_train.setdefault(
+            "min_data_in_leaf", params_train.get("min_child_samples", 20)
+        )
 
         num_boost_round = int(params_train.pop("num_iterations", 3000))
 
@@ -835,9 +910,12 @@ def optimizar_rfppo_hpo(
             seed=base_seed,
         )
 
-        metric_candidates = [k for k in cv_results.keys() if k.endswith('-mean')]
+        metric_candidates = [k for k in cv_results.keys() if k.endswith("-mean")]
         if not metric_candidates:
-            logger.warning("RFEPPO - lgb.cv no devolvió métricas '-mean'. Keys: %s", list(cv_results.keys()))
+            logger.warning(
+                "RFEPPO - lgb.cv no devolvió métricas '-mean'. Keys: %s",
+                list(cv_results.keys()),
+            )
             return 0.0
 
         metric_name = metric_candidates[0]
@@ -847,7 +925,7 @@ def optimizar_rfppo_hpo(
         logger.info("RFEPPO - mejor ganancia VALID=%s", f"{ganancia_best:,.0f}")
         logger.info("RFEPPO - mejor iteracion VALID=%s", best_iter)
         logger.info("RFEPPO - mejor params VALID=%s", params_train)
-        
+
         return ganancia_best
 
     optimizer = RFEPPOHPO(
@@ -864,7 +942,9 @@ def optimizar_rfppo_hpo(
     best_params["seed"] = base_seed
 
     if "num_iterations" not in best_params:
-        best_params["num_iterations"] = int(PARAMETROS_LGB.get("num_iterations", [100, 3000])[1])
+        best_params["num_iterations"] = int(
+            PARAMETROS_LGB.get("num_iterations", [100, 3000])[1]
+        )
 
     logger.info(
         "RFEPPO - mejor ganancia VALID=%s",
@@ -872,21 +952,3 @@ def optimizar_rfppo_hpo(
     )
 
     return best_params, float(best_reward)
-
-
-# ----------------------------
-# Example usage (pseudo-code) – keep minimal
-# ----------------------------
-
-    # 1) Define your evaluator using your own data split & gain function.
-    # def evaluate_fn(params: Dict[str, Any]) -> float:
-    #     import lightgbm as lgb
-    #     # Build/train model using your X_train, y_train, X_valid, y_valid
-    #     # Return a scalar reward (e.g., custom gain or validation AUC)
-    #     return gain
-    #
-    # 2) Instantiate and run search
-    # space = default_lgbm_space()
-    # hpo = RFEPPOHPO(space, episodes=200, initial_real_episodes=100, kl_threshold=0.1)
-    # best_params, best_reward = hpo.search(evaluate_fn)
-    # print(best_params, best_reward)
